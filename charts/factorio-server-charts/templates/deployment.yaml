@@ -53,7 +53,7 @@ spec:
         - name: LOAD_LATEST_SAVE
           value: {{ .Values.factorioServer.load_latest_save | quote }}
         - name: PORT
-          value: {{ .Values.service.port }}
+          value: {{ .Values.service.port | quote }}
         - name: CONFIG
           value: {{ .Values.factorioServer.config_path | quote }}
       volumes:
