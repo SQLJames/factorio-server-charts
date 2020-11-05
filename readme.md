@@ -1,6 +1,6 @@
 ## Factorio helm chart
 This is something of a passion project for both learning kubernetes and because kubernetes is awesome. 
-Because of this, I have only confirm this working on version 1.0.0 of factorio but I am sure it will work just fine on old versions as long as the schema doesn't change to much on the Secrets settings. 
+Because of this, I have only confirm this working on version 1.0.0 of factorio but I am sure it will work just finn old versions as long as the schema doesn't change to much on the Secrets settings. 
 
 However, with the way this is implemented if you want to make it backwards compatible, you can update the appropriate sections in the values.yaml file to have the items added or removed to the json files that are required by factorio. Server-settings, map-gen-settings, etc. 
 
