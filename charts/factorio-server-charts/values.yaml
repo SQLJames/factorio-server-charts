@@ -42,21 +42,21 @@ persistence:
     existingClaim:
   storageClass: longhorn
 factorioServer:
-  #specify a save name
+  # specify a save name
   save_name: "replaceMe"
-  #Generate a New Save
+  # Generate a New Save
   generate_new_save: true
-  #Update mods on start
+  # Update mods on start
   update_mods_on_start: false
-  #lets the game know if you want to load the latest save
+  # lets the game know if you want to load the latest save
   load_latest_save: true
   # Location of the configuration files that are generated
   config_path: /srv 
 
 serverSettings:
-  #Your Instance's Name
+  # Your Instance Name
   name: Factorio
-  #Your Instance's Description
+  # Your Instance Description
   description: "Factorio running on Kubernetes"
   tags:
   - game
@@ -65,14 +65,14 @@ serverSettings:
   max_players: 0
   # Game visibility
   visibility:
-    # Game will be published on the official Factorio matching server'
+    # Game will be published on the official Factorio matching server
     public: true
-    # Game will be broadcast on LAN'
+    # Game will be broadcast on LAN
     lan: true
   # Your factorio.com login credentials. Required for games with visibility public
   username: ''
   password: ''
-  # Authentication token. May be used instead of 'password' above.
+  # Authentication token. May be used instead of password above.
   token: ''
   # password required to log into the factorio server
   game_password: ''
@@ -122,9 +122,9 @@ rcon:
   port: 27015
 
 map_gen_settings:
-  #The inverse of 'water scale' in the map generator GUI.
+  #The inverse of water scale in the map generator GUI.
   terrain_segmentation: 1
-  #  The equivalent to 'water coverage' in the map generator GUI. Higher coverage means
+  #  The equivalent to water coverage in the map generator GUI. Higher coverage means
   #  more water in larger oceans.
   #  Water level = 10 * log2(this value)
   water: 1
@@ -132,7 +132,7 @@ map_gen_settings:
   width: 0
   # Width and height of map, in tiles; 0 means infinite
   height: 0
-  # Multiplier for 'biter free zone radius'
+  # Multiplier for biter free zone radius
   starting_area: 1
   peaceful_mode: false
   autoplace_controls:
@@ -169,26 +169,24 @@ map_gen_settings:
       size: 1
       richness: 1
   cliff_settings:
-    #_name_comment: Name of the cliff prototype
+    # Name of the cliff prototype
     name: cliff
-    #_cliff_elevation_0_comment: Elevation of first row of cliffs
+    # Elevation of first row of cliffs
     cliff_elevation_0: 10
-    #_cliff_elevation_interval_comment:
-    #- Elevation difference between successive rows of cliffs.
-    #- This is inversely proportional to 'frequency' in the map generation GUI. Specifically, when set from the GUI the value is 40 / frequency.
+    # Elevation difference between successive rows of cliffs.
+    # This is inversely proportional to frequency in the map generation GUI. Specifically, when set from the GUI the value is 40 / frequency.
     cliff_elevation_interval: 40
-    #_richness_comment: Called 'cliff continuity' in the map generator GUI. 0 will result in no cliffs, 10 will make all cliff rows completely solid
+    # Called cliff continuity in the map generator GUI. 0 will result in no cliffs, 10 will make all cliff rows completely solid
     richness: 1
-  #_property_expression_names_comment:
-  #- Overrides for property value generators (map type)
-  #- Leave 'elevation' blank to get 'normal' terrain.
-  #- 'Use ''elevation'': ''0_16-elevation'' to reproduce terrain from 0.16.'
-  #- 'Use ''elevation'': ''0_17-island'' to get an island.'
-  #- Moisture and terrain type are also controlled via this.
-  #- "'control-setting:moisture:frequency:multiplier' is the inverse of the 'moisture scale' in the map generator GUI."
-  #- "'control-setting:moisture:bias' is the 'moisture bias' in the map generator GUI."
-  #- "'control-setting:aux:frequency:multiplier' is the inverse of the 'terrain type scale' in the map generator GUI."
-  #- "'control-setting:aux:bias' is the 'teraain type bias' in the map generator GUI."
+  # Overrides for property value generators (map type)
+  # Leave elevation blank to get normal terrain.
+  # Use ''elevation'': ''0_16-elevation'' to reproduce terrain from 0.16.
+  # Use ''elevation'': ''0_17-island'' to get an island.
+  # Moisture and terrain type are also controlled via this.
+  # "control-setting:moisture:frequency:multiplier is the inverse of the moisture scale in the map generator GUI."
+  # "control-setting:moisture:bias is the moisture bias in the map generator GUI."
+  # "control-setting:aux:frequency:multiplier is the inverse of the terrain type scale in the map generator GUI."
+  # "control-setting:aux:bias is the teraain type bias in the map generator GUI."
   property_expression_names:
     control-setting:moisture:frequency:multiplier: '1'
     control-setting:moisture:bias: '0'
@@ -197,7 +195,7 @@ map_gen_settings:
   starting_points:
   - "x": 0
     "y": 0
-  #_seed_comment: Use null for a random seed, number for a specific seed.
+  # Use null for a random seed, number for a specific seed.
   seed: null 
 
 map_settings:
@@ -208,8 +206,8 @@ map_settings:
     research_queue_setting: after-victory
   pollution:
     enabled: true
-    #_comment_min_to_diffuse_1: these are values for 60 ticks (1 simulated second)
-    #_comment_min_to_diffuse_2: amount that is diffused to neighboring chunk
+    # these are values for 60 ticks (1 simulated second)
+    # amount that is diffused to neighboring chunk
     diffusion_ratio: 0.02
     min_to_diffuse: 15
     ageing: 1
