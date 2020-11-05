@@ -7,3 +7,6 @@ However, with the way this is implemented if you want to make it backwards compa
 I did run into one issue on my setup, and I feel like it will likely come up again if people follow along. The factorio server is defaulting to run on port 30000 instead of 34197 because the default nginx port range for ingress does not have 34197 within the normal port range. This shows the line of code that specifically is causing the issue inside kubernetes :)
 https://github.com/kubernetes/kubernetes/blob/59876df736c41093363f4c198aeec05e29c9c902/cmd/kube-apiserver/app/server.go#L197
 
+## Releases
+Releases are published using the official helm release action in github. 
+https://github.com/helm/chart-releaser-action
