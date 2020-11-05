@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The root schema",
+  "default": {},
+  "required": [
+      "rcon"
+  ],
+  "properties": {
+      "rcon": {
+          "$id": "#/properties/rcon",
+          "type": "object",
+          "title": "The rcon schema",
+          "description": "houses the information about the rcon service",
+          "default": {},
+          "examples": [
+              {
+                  "password": "1234Test"
+              }
+          ],
+          "required": [
+              "password"
+          ],
+          "properties": {
+              "password": {
+                  "$id": "#/properties/rcon/properties/password",
+                  "type": "string",
+                  "minLength": 15,
+                  "title": "The password schema",
+                  "description": "Sets rcon password",
+                  "default": "",
+                  "examples": [
+                      "1234Test"
+                  ]
+              }
+          },
+          "additionalProperties": true
+      }
+  },
+  "additionalProperties": true
+}

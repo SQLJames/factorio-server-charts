@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
+  labels:
+    app: {{ template "factorio-server-charts.fullname" . }}
+    chart: {{ template "factorio-server-charts.fullname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  server-settings.json: |
+{{ toJson .Values.serverSettingsJson | indent 4 }}
+  rconpw: |
+{{ .Values.rcon.password | indent 4 }}
+  map-gen-settings.json: | 
+{{ toJson .Values.map_gen_settings | indent 4 }}
+  map-settings.json: | 
+{{ toJson .Values.map_settings | indent 4 }}

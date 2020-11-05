@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "factorio-server-charts.fullname" . }}-datadir
+  labels:
+    app: "{{ template "factorio-server-charts.fullname" . }}-{{ .Chart.Version }}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.dataDir.Size | quote }}
+  storageClassName: "{{ .Values.persistence.storageClass }}"

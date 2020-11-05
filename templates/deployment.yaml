@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "factorio-server-charts.fullname" . }}
+  labels:
+    app: {{ template "factorio-server-charts.fullname" . }}
+    chart: {{ template "factorio-server-charts.fullname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "factorio-server-charts.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "factorio-server-charts.fullname" . }}
+    spec:
+      securityContext:
+        runAsUser: 845
+        runAsGroup: 845
+        fsGroup: 845
+      containers:
+      - name: {{ template "factorio-server-charts.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          runAsUser: 0
+          allowPrivilegeEscalation: true
+        ports:
+        - name: factorio
+          containerPort: {{ .Values.service.port }}
+          protocol: UDP
+        - containerPort: {{ .Values.rcon.port }}
+          protocol: TCP
+        volumeMounts:
+          - name: datadir
+            mountPath: /factorio
+          - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
+            mountPath: {{ .Values.factorioServer.config_path | quote }}
+        env:
+        - name: INSTANCE_NAME
+          value: {{ .Values.factorioServer.instance_name | quote }} # {{ .Values.factorioServer.instance_name | quote}}
+        - name: INSTANCE_DESC 
+          value: {{ .Values.factorioServer.instance_description | quote }} # {{ .Values.factorioServer.instance_description | quote}}
+        - name: SAVE_NAME
+          value: {{ .Values.factorioServer.save_name | quote }} #  {{ .Values.factorioServer.save_name | quote}}
+        - name: GENERATE_NEW_SAVE
+          value: {{ .Values.factorioServer.generate_new_save | quote }}
+        - name: LOAD_LATEST_SAVE
+          value: {{ .Values.factorioServer.load_latest_save | quote }}
+        - name: PORT
+          value: {{ .Values.service.port }}
+        - name: CONFIG
+          value: {{ .Values.factorioServer.config_path | quote }}
+      volumes:
+        - name: datadir
+          persistentVolumeClaim:
+            claimName: {{ template "factorio-server-charts.fullname" . }}-datadir
+        - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
+          configMap:
+            name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
