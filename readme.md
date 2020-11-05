@@ -1,3 +1,5 @@
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/factorio-server-charts)](https://artifacthub.io/packages/search?repo=factorio-server-charts)
+
 ## Factorio helm chart
 This is something of a passion project for both learning kubernetes and because kubernetes is awesome. 
 Because of this, I have only confirm this working on version 1.0.0 of factorio but I am sure it will work just fine on old versions as long as the schema doesn't change to much on the Secrets settings. 
