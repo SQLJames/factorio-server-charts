@@ -9,7 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   server-settings.json: |
-{{ toJson .Values.serverSettingsJson | indent 4 }}
+{{ toJson .Values.serverSettings | indent 4 }}
   rconpw: |
 {{ .Values.rcon.password | indent 4 }}
   map-gen-settings.json: | 

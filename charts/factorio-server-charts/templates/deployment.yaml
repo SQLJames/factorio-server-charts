@@ -40,10 +40,12 @@ spec:
           - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
             mountPath: {{ .Values.factorioServer.config_path | quote }}
         env:
+        - name: UPDATE_MODS_ON_START
+          value: {{ .Values.factorioServer.update_mods_on_start | quote }}
         - name: INSTANCE_NAME
-          value: {{ .Values.factorioServer.instance_name | quote }} # {{ .Values.factorioServer.instance_name | quote}}
+          value: {{ .Values.serverSettings.name | quote }} # {{ .Values.factorioServer.instance_name | quote}}
         - name: INSTANCE_DESC 
-          value: {{ .Values.factorioServer.instance_description | quote }} # {{ .Values.factorioServer.instance_description | quote}}
+          value: {{ .Values.serverSettings.description | quote }} # {{ .Values.factorioServer.instance_description | quote}}
         - name: SAVE_NAME
           value: {{ .Values.factorioServer.save_name | quote }} #  {{ .Values.factorioServer.save_name | quote}}
         - name: GENERATE_NEW_SAVE
