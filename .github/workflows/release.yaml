@@ -26,6 +26,6 @@ jobs:
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.0.0
-        charts_dir: factorio-server-charts
         env:
             CR_TOKEN: '${{ secrets.CR_TOKEN }}'
+            charts_dir: factorio-server-charts
