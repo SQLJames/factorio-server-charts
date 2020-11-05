@@ -1,0 +1,5 @@
+# Artifact Hub repository metadata file
+repositoryID: 11e9873c-084e-4d1c-b59b-ab3ab02fd337
+owners: # (optional, used to claim repository ownership)
+  - name: James Rhoat
+    email: James@Rhoat.com
