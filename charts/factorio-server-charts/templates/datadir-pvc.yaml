@@ -1,3 +1,4 @@
+{{ if not .Values.persistence.dataDir.existingClaim }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -11,3 +12,4 @@ spec:
     requests:
       storage: {{ .Values.persistence.dataDir.Size | quote }}
   storageClassName: "{{ .Values.persistence.storageClass }}"
+  {{ end }}

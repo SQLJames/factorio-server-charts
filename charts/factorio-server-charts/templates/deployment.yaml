@@ -59,7 +59,7 @@ spec:
       volumes:
         - name: datadir
           persistentVolumeClaim:
-            claimName: {{ template "factorio-server-charts.fullname" . }}-datadir
+            claimName: {{ if .Values.persistence.dataDir.existingClaim }} {{.Values.persistence.dataDir.existingClaim}} {{ else }}{{ template "factorio-server-charts.fullname" . }}-datadir {{ end }}
         - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
           configMap:
             name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
