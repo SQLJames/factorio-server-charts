@@ -303,5 +303,6 @@ map_settings:
     - 2
     - 3
     - 4
+    negative_path_cache_delay_interval: 20
   max_failed_behavior_count: 3
     
