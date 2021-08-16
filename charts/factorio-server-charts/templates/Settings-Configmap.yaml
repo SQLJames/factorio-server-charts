@@ -9,10 +9,16 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   server-settings.json: |
-{{ toJson .Values.serverSettings | indent 4 }}
+{{ toJson .Values.server_settings | indent 4 }}
   rconpw: |
 {{ .Values.rcon.password | indent 4 }}
-  map-gen-settings.json: | 
+  map-gen-settings.json: |
 {{ toJson .Values.map_gen_settings | indent 4 }}
-  map-settings.json: | 
+  map-settings.json: |
 {{ toJson .Values.map_settings | indent 4 }}
+  server-adminlist.json: |
+{{ toJson .Values.admin_list | indent 4 }}
+  server-whitelist.json: |
+{{ toJson .Values.white_list | indent 4 }}
+  server-banlist.json: |
+{{ toJson .Values.ban_list | indent 4 }}

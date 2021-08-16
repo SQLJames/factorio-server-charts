@@ -12,6 +12,8 @@ spec:
   selector:
     matchLabels:
       app: {{ template "factorio-server-charts.fullname" . }}
+  strategy:
+{{ toYaml .Values.strategy | indent 4 }}
   template:
     metadata:
       labels:
@@ -34,6 +36,8 @@ spec:
           protocol: UDP
         - containerPort: {{ .Values.rcon.port }}
           protocol: TCP
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
           - name: datadir
             mountPath: /factorio
@@ -43,11 +47,11 @@ spec:
         - name: UPDATE_MODS_ON_START
           value: {{ .Values.factorioServer.update_mods_on_start | quote }}
         - name: INSTANCE_NAME
-          value: {{ .Values.serverSettings.name | quote }} # {{ .Values.factorioServer.instance_name | quote}}
-        - name: INSTANCE_DESC 
-          value: {{ .Values.serverSettings.description | quote }} # {{ .Values.factorioServer.instance_description | quote}}
+          value: {{ .Values.server_settings.name | quote }}
+        - name: INSTANCE_DESC
+          value: {{ .Values.server_settings.description | quote }}
         - name: SAVE_NAME
-          value: {{ .Values.factorioServer.save_name | quote }} #  {{ .Values.factorioServer.save_name | quote}}
+          value: {{ .Values.factorioServer.save_name | quote }}
         - name: GENERATE_NEW_SAVE
           value: {{ .Values.factorioServer.generate_new_save | quote }}
         - name: LOAD_LATEST_SAVE
@@ -56,10 +60,19 @@ spec:
           value: {{ .Values.service.port | quote }}
         - name: CONFIG
           value: {{ .Values.factorioServer.config_path | quote }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: datadir
+        {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{ if .Values.persistence.dataDir.existingClaim }} {{.Values.persistence.dataDir.existingClaim}} {{ else }}{{ template "factorio-server-charts.fullname" . }}-datadir {{ end }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
         - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
           configMap:
             name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
+

@@ -14,5 +14,10 @@ spec:
     port: {{ .Values.service.port }}
     targetPort: {{ .Values.service.port }}
     protocol: UDP
+    nodePort: {{ default "" .Values.service.nodePort}}
   selector:
     app: {{ template "factorio-server-charts.fullname" . }}
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
+{{- end }}
