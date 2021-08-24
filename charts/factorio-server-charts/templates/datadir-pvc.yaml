@@ -1,3 +1,4 @@
+{{- if .Values.persistence.enabled -}}
 {{ if not .Values.persistence.dataDir.existingClaim }}
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -5,11 +6,22 @@ metadata:
   name: {{ template "factorio-server-charts.fullname" . }}-datadir
   labels:
     app: "{{ template "factorio-server-charts.fullname" . }}-{{ .Chart.Version }}"
+{{- if .Values.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.persistence.annotations | indent 4 }}
+{{- end }}
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: {{ .Values.persistence.dataDir.Size | quote }}
-  storageClassName: "{{ .Values.persistence.storageClass }}"
-  {{ end }}
+{{- if .Values.persistence.storageClassName }}
+{{- if (eq "-" .Values.persistence.storageClassName) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.storageClassName }}"
+{{- end }}
+{{- end }}
+{{ end }}
+{{- end -}}

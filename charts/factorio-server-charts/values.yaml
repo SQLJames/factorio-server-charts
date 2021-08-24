@@ -1,33 +1,75 @@
 
-# Number of replicas to create (only 1 is supported)
+#### K8s configuration ####
+
+## Number of replicas to create (only 1 is supported)
 replicaCount: 1
 
 image:
   repository: "factoriotools/factorio"
-  # Container image pull policy
+  ## Container image pull policy
   pullPolicy: Always
-  # Overrides the image tag whose default is the chart appVersion.
+  ## Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
+  ## You should set an fix version, i.e.:
+  # tag: "1.1.37"
 
 # Security options the operator container should run with
 securityContext:
   runAsUser: 1000
   fsGroup: 2000
 
+## The service is a kind tricky, so factorio uses UDP, but not every cloud provider is able to route UDP traffic.
+## I.e. your cloud provider has LoadBalancers without the ability for UPD protocoll. Furthermore kubectl ist not able to route UDP Traffic
+## ref: https://github.com/kubernetes/kubernetes/issues/47862
+## You have to expose factorio on a NodePort and map a port between 30000 and 32767, but the nativ port ist 34197. So you have always to specify the port in factorio.
+## The best way ist to define a ClusterIP service and define one or more externalIPs. Of course this IPs must be avaiable on the node the factorio runs the pod!
 service:
-  type: LoadBalancer
-  port: 30000
-# Compute Resources required by the operator container
-resources: # +doc-gen:break
+  type: ClusterIP
+  port: 34197
+  ## If you are able in your cluster to map an external IP, set it here
+  # externalIPs:
+  #   - "192.168.0.1"
+  #   - "192.168.0.2"
+  ## If you use "type: NodePort" set the port to a value you like in the range of 30000-32767. Leave it blank for a random port
+  # nodePort: ""
+  ## Examples:
+  ## NodePort setup
+  # type: NodePort
+  #   nodePort: ""
+  ## ClusterIp setup
+  # ClusterIP:
+  #   port: 34197
+  ## LoadBalancer setup
+  # type: LoadBalancer
+
+
+## Compute Resources required by the operator container
+resources:
+  ## We have to ensure that factorio have enough computing resources avaiable. We set here an absolute minimum
+  ## Keep in mind that big factorio base can consume a lot of memory and cpu
   requests:
     memory: 512Mi
     cpu: 500m
-# Node labels for pod assignment
-# Example:
-# nodeSelector:  
+  ## If you like to limit factiorio resources
+  # limits:
+  #   memory: 1024Mi
+  #   cpu: 1000m
+
+# Node labels for pod assignment. Remove the curly braces!
+nodeSelector: {}
 #  beta.kubernetes.io/os: linux
 #  beta.kubernetes.io/arch: amd64
-nodeSelector: {} # +doc-gen:break
+#  kubernetes.io/hostname: your-cool-hostname
+
+## Strategy used to replace old pods
+## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+strategy:
+  type: Recreate
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 1
+  #   maxUnavailable: 0
 
 # Tolerations for pod assignment
 tolerations: []
@@ -35,12 +77,23 @@ tolerations: []
 # Affinity rules for pod assignment
 affinity: {}
 
-# Sets the data persistence volume configuration
+## Sets the data persistence volume configuration
+## IMPORTANT: If you do not setup a PV all your savegames will be lost on pod recreation or helm upgrade
 persistence:
-  dataDir: 
+  enabled: false
+  dataDir:
     Size: "1Gi"
-    existingClaim:
-  storageClass: longhorn
+    ## If you have an existing claim, set your name here
+    # existingClaim: "existing-claim-name"
+  ## If you like to use a specific storageClassName, set the name. Leave it blank for the default class
+  storageClassName: ""
+  ## If you have annotations to spin up a PV i.e. the location. Remove the curly braces
+  annotations: {}
+
+
+
+#### factorio application configuration ####
+
 factorioServer:
   # specify a save name
   save_name: "replaceMe"
@@ -51,9 +104,9 @@ factorioServer:
   # lets the game know if you want to load the latest save
   load_latest_save: true
   # Location of the configuration files that are generated
-  config_path: /srv 
+  config_path: /srv
 
-serverSettings:
+server_settings:
   # Your Instance Name
   name: Factorio
   # Your Instance Description
@@ -66,7 +119,7 @@ serverSettings:
   # Game visibility
   visibility:
     # Game will be published on the official Factorio matching server
-    public: true
+    public: false
     # Game will be broadcast on LAN
     lan: true
   # Your factorio.com login credentials. Required for games with visibility public
@@ -77,7 +130,7 @@ serverSettings:
   # password required to log into the factorio server
   game_password: ''
   # When set to true, the server will only allow clients that have a valid Factorio.com account
-  require_user_verification: true
+  require_user_verification: false
   # optional, default value is 0. 0 means unlimited.
   max_upload_in_kilobytes_per_second: 0
   # optional, default value is 5. 0 means unlimited.
@@ -118,7 +171,7 @@ serverSettings:
 
 # Password and port for the rcon service
 rcon:
-  password: "01234567890123456"
+  password: "abcdefghijklmno"
   port: 27015
 
 map_gen_settings:
@@ -196,7 +249,7 @@ map_gen_settings:
   - "x": 0
     "y": 0
   # Use null for a random seed, number for a specific seed.
-  seed: null 
+  seed: null
 
 map_settings:
   difficulty_settings:
@@ -221,9 +274,9 @@ map_settings:
     enemy_attack_pollution_consumption_modifier: 1
   enemy_evolution:
     enabled: true
-    time_factor: 4.0e-06
+    time_factor: 0.000004
     destroy_factor: 0.002
-    pollution_factor: 9.0e-07
+    pollution_factor: 0.0000009
   enemy_expansion:
     enabled: true
     min_base_spacing: 3
@@ -303,5 +356,17 @@ map_settings:
     - 2
     - 3
     - 4
+    negative_path_cache_delay_interval: 20
   max_failed_behavior_count: 3
-    
+
+admin_list:
+  # - "john_doe"
+  # - "jane_doe"
+
+white_list:
+  # - "john_doe"
+  # - "jane_doe"
+
+ban_list:
+  # - "john_doe"
+  # - "jane_doe"
