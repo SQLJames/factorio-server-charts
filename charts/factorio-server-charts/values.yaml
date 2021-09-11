@@ -106,7 +106,7 @@ factorioServer:
   # Location of the configuration files that are generated
   config_path: /srv
 
-server_settings:
+serverSettings:
   # Your Instance Name
   name: Factorio
   # Your Instance Description
