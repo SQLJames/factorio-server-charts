@@ -41,6 +41,7 @@ service:
   #   port: 34197
   ## LoadBalancer setup
   # type: LoadBalancer
+  annotations: {}
 
 
 ## Compute Resources required by the operator container
