@@ -3,6 +3,25 @@ entries:
   factorio-server-charts:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2022-01-13T08:42:24.497720532Z"
+    description: A Helm chart for running factorio in kubernetes
+    digest: b4baf8b268111f6ca7a0f15df4e4eee7687be67a5f7ec6bb5f7e06db852b0ba8
+    keywords:
+    - game
+    - server
+    - headless
+    maintainers:
+    - email: James@Rhoat.com
+      name: James Rhoat
+    name: factorio-server-charts
+    sources:
+    - https://github.com/SQLJames/factorio-server-charts
+    type: application
+    urls:
+    - https://github.com/SQLJames/factorio-server-charts/releases/download/factorio-server-charts-1.0.10/factorio-server-charts-1.0.10.tgz
+    version: 1.0.10
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2021-10-17T23:42:52.171649138Z"
     description: A Helm chart for running factorio in kubernetes
     digest: 9db70c01f0ebd0d2df7cad07e3a394d699711c4e26932def655670887bd012f1
