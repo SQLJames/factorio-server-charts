@@ -19,17 +19,34 @@ spec:
       labels:
         app: {{ template "factorio-server-charts.fullname" . }}
     spec:
-      securityContext:
-        runAsUser: 845
-        runAsGroup: 845
-        fsGroup: 845
+      initContainers:
+        - name: volume-permissions-serversettingsconfig
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy:  {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              mkdir -p /factorio/configs
+              mkdir -p /factorio/config
+              cp --verbose /deployed-configs/* /factorio/configs
+              #sleep 100
+              chown -vR factorio:factorio /factorio
+              chmod -vR 777 /factorio/configs
+              ls -alth /factorio
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: datadir
+              mountPath: /factorio
+            - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
+              mountPath: /deployed-configs
       containers:
       - name: {{ template "factorio-server-charts.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
           runAsUser: 0
-          allowPrivilegeEscalation: true
         ports:
         - name: factorio
           containerPort: {{ .Values.service.port }}
@@ -41,8 +58,6 @@ spec:
         volumeMounts:
           - name: datadir
             mountPath: /factorio
-          - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
-            mountPath: {{ .Values.factorioServer.config_path | quote }}
         env:
         - name: UPDATE_MODS_ON_START
           value: {{ .Values.factorioServer.update_mods_on_start | quote }}
@@ -59,7 +74,7 @@ spec:
         - name: PORT
           value: {{ .Values.service.port | quote }}
         - name: CONFIG
-          value: {{ .Values.factorioServer.config_path | quote }}
+          value: /factorio/configs
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

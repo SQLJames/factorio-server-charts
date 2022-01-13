@@ -1,6 +1,5 @@
 
 #### K8s configuration ####
-
 ## Number of replicas to create (only 1 is supported)
 replicaCount: 1
 
@@ -13,10 +12,7 @@ image:
   ## You should set an fix version, i.e.:
   # tag: "1.1.37"
 
-# Security options the operator container should run with
-securityContext:
-  runAsUser: 1000
-  fsGroup: 2000
+
 
 ## The service is a kind tricky, so factorio uses UDP, but not every cloud provider is able to route UDP traffic.
 ## I.e. your cloud provider has LoadBalancers without the ability for UPD protocoll. Furthermore kubectl ist not able to route UDP Traffic
@@ -24,7 +20,7 @@ securityContext:
 ## You have to expose factorio on a NodePort and map a port between 30000 and 32767, but the nativ port ist 34197. So you have always to specify the port in factorio.
 ## The best way ist to define a ClusterIP service and define one or more externalIPs. Of course this IPs must be avaiable on the node the factorio runs the pod!
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 34197
   ## If you are able in your cluster to map an external IP, set it here
   # externalIPs:
@@ -81,7 +77,7 @@ affinity: {}
 ## Sets the data persistence volume configuration
 ## IMPORTANT: If you do not setup a PV all your savegames will be lost on pod recreation or helm upgrade
 persistence:
-  enabled: false
+  enabled: true
   dataDir:
     Size: "1Gi"
     ## If you have an existing claim, set your name here
@@ -104,8 +100,7 @@ factorioServer:
   update_mods_on_start: false
   # lets the game know if you want to load the latest save
   load_latest_save: true
-  # Location of the configuration files that are generated
-  config_path: /srv
+
 
 server_settings:
   # Your Instance Name
