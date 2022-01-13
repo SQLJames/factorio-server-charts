@@ -21,7 +21,7 @@ image:
 ## The best way ist to define a ClusterIP service and define one or more externalIPs. Of course this IPs must be avaiable on the node the factorio runs the pod!
 service:
   type: LoadBalancer
-  port: 34197
+  port: 30000
   ## If you are able in your cluster to map an external IP, set it here
   # externalIPs:
   #   - "192.168.0.1"
@@ -30,8 +30,7 @@ service:
   # nodePort: ""
   ## Examples:
   ## NodePort setup
-  # type: NodePort
-  #   nodePort: ""
+  
   ## ClusterIp setup
   # ClusterIP:
   #   port: 34197
@@ -90,6 +89,21 @@ persistence:
 
 
 #### factorio application configuration ####
+mods:
+  enabled: false
+# in order to use the mods portal you will need to specify the username and token in the server_settings.
+  portal:
+    - Krastorio2
+    - StorageTank2_Updated
+    - early-robots
+# unofficial section is meant to just allow you to download and place folders into the mods folder. 
+# we will not check version compatibility automatically with these downloads.
+# you can encounter an error if the file names dont match what the mod is expecting for example
+#Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod 
+# /factorio/mods/Squeak-Through.zip doesn't match the expected Squeak Through_1.8.2.zip (case sensitive!)
+  unofficial:
+    - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
+      name: "Squeak Through_1.8.2.zip"
 
 factorioServer:
   # specify a save name

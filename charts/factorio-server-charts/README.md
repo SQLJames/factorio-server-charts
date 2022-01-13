@@ -249,5 +249,29 @@ https://github.com/kubernetes/kubernetes/blob/59876df736c41093363f4c198aeec05e29
 Releases are published using the official helm release action in github. 
 https://github.com/helm/chart-releaser-action
 
+## installing mods
+
+change enabled to true, follow comments below.
+
+If the factorio server doesn't start, check that the logs don't have an error with the mods. They are pretty verbose
+```
+mods:
+  enabled: true
+# in order to use the mods portal you will need to specify the username and token in the server_settings.
+# name is determined by the url, it will be the last part of the url, not the title of the mod.
+  portal:
+    - Krastorio2
+    - StorageTank2_Updated
+    - early-robots
+# unofficial section is meant to just allow you to download and place folders into the mods folder. 
+# we will not check version compatibility automatically with these downloads.
+# you can encounter an error if the file names dont match what the mod is expecting for example
+#Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod 
+# /factorio/mods/Squeak-Through.zip doesn't match the expected Squeak Through_1.8.2.zip (case sensitive!)
+  unofficial:
+    - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
+      name: "Squeak Through_1.8.2.zip"
+```
+
 ## Readme 
 Readme was generated from the [chart-doc-gen](https://github.com/kubepack/chart-doc-gen) tool.

@@ -41,6 +41,24 @@ spec:
               mountPath: /factorio
             - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
               mountPath: /deployed-configs
+        {{- if .Values.mods.enabled }}
+        - name: download-factorio-mods
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy:  {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              mkdir -p /factorio/mods
+              bash /scripts/mod-downloader.sh
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: datadir
+              mountPath: /factorio
+            - name: {{ template "factorio-server-charts.fullname" . }}-mod-downloader-configmap
+              mountPath: /scripts
+      {{- end }}
       containers:
       - name: {{ template "factorio-server-charts.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -90,4 +108,6 @@ spec:
         - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
           configMap:
             name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
-
+        - name: {{ template "factorio-server-charts.fullname" . }}-mod-downloader-configmap
+          configMap:
+            name: {{ template "factorio-server-charts.fullname" . }}-mod-downloader-configmap
