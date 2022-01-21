@@ -19,6 +19,7 @@ spec:
       labels:
         app: {{ template "factorio-server-charts.fullname" . }}
     spec:
+      hostNetwork: true 
       initContainers:
         - name: volume-permissions-serversettingsconfig
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -93,10 +94,10 @@ spec:
           value: {{ .Values.service.port | quote }}
         - name: CONFIG
           value: /factorio/configs
-      {{- with .Values.nodeSelector }}
+{{- if .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       volumes:
         - name: datadir
         {{- if .Values.persistence.enabled }}

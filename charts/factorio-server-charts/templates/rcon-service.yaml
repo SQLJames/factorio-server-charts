@@ -1,7 +1,8 @@
+{{- if .Values.rcon.external }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "factorio-server-charts.fullname" . }}
+  name: {{ template "factorio-server-charts.fullname" . }}-rcon
   labels:
     app: {{ template "factorio-server-charts.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -12,16 +13,12 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.rcon.type }}
   ports:
-  - name: factorio
-    port: {{ .Values.service.port }}
-    targetPort: {{ .Values.service.port }}
-    protocol: UDP
-    #nodePort: {{ .Values.service.port}}
+  - name: rcon
+    port: {{ .Values.rcon.port }}
+    nodePort: {{ .Values.rcon.port}}
+    protocol: TCP
   selector:
     app: {{ template "factorio-server-charts.fullname" . }}
-{{- if .Values.service.externalIPs }}
-  externalIPs:
-{{ toYaml .Values.service.externalIPs | indent 4 }}
 {{- end }}

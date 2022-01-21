@@ -12,20 +12,26 @@ image:
   ## You should set an fix version, i.e.:
   # tag: "1.1.37"
 
+nodeSelector: {}
+#  beta.kubernetes.io/os: linux
+#  beta.kubernetes.io/arch: amd64
+#  kubernetes.io/hostname: your-cool-hostname
 
 
 ## The service is a kind tricky, so factorio uses UDP, but not every cloud provider is able to route UDP traffic.
-## I.e. your cloud provider has LoadBalancers without the ability for UPD protocoll. Furthermore kubectl ist not able to route UDP Traffic
+## I.e. your cloud provider has LoadBalancers without the ability for UDP protocol. Furthermore kubectl ist not able to route UDP Traffic
 ## ref: https://github.com/kubernetes/kubernetes/issues/47862
-## You have to expose factorio on a NodePort and map a port between 30000 and 32767, but the nativ port ist 34197. So you have always to specify the port in factorio.
-## The best way ist to define a ClusterIP service and define one or more externalIPs. Of course this IPs must be avaiable on the node the factorio runs the pod!
+## You have to expose factorio on a NodePort and map a port between 30000 and 32767, but the native port is 34197. So you have always to specify the port in factorio.
+## The best way ist to define a ClusterIP service and define one or more externalIPs. Of course this IPs must be avaiable on the node the factorio pod runs on !
 service:
-  type: LoadBalancer
-  port: 30000
-  ## If you are able in your cluster to map an external IP, set it here
+  type: NodePort
+  port: 31497
+  ## If you are able to map an external IP, set it here
   # externalIPs:
-  #   - "192.168.0.1"
-  #   - "192.168.0.2"
+  #  - "192.168.0.1"
+  #  - "192.168.0.2"
+  # 
+  # 
   ## If you use "type: NodePort" set the port to a value you like in the range of 30000-32767. Leave it blank for a random port
   # nodePort: ""
   ## Examples:
@@ -51,11 +57,6 @@ resources:
   #   memory: 1024Mi
   #   cpu: 1000m
 
-# Node labels for pod assignment. Remove the curly braces!
-nodeSelector: {}
-#  beta.kubernetes.io/os: linux
-#  beta.kubernetes.io/arch: amd64
-#  kubernetes.io/hostname: your-cool-hostname
 
 ## Strategy used to replace old pods
 ## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
@@ -181,8 +182,10 @@ server_settings:
 
 # Password and port for the rcon service
 rcon:
+  external: true
+  type: LoadBalancer
   password: "abcdefghijklmno"
-  port: 27015
+  port: 30100
 
 map_gen_settings:
   #The inverse of water scale in the map generator GUI.
