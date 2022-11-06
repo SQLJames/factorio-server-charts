@@ -42,7 +42,7 @@ spec:
                 jq -M --rawfile username /account/username '.username=($username|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
                 if [ -f "/account/password" ]; then
                   jq -M --rawfile password /account/password '.password=($password|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
-                end
+                fi
                 if [ -f "/account/token" ]; then
                   jq -M --rawfile token /account/token '.token=($token|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
                 fi
