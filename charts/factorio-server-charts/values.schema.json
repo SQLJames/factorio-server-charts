@@ -25,7 +25,7 @@
           "properties": {
               "password": {
                   "$id": "#/properties/rcon/properties/password",
-                  "type": ["string", "null"],
+                  "type": "string",
                   "minLength": 15,
                   "title": "The password schema",
                   "description": "Sets rcon password",
