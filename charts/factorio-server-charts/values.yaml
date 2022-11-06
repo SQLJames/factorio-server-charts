@@ -206,7 +206,7 @@ rcon:
   passwordSecret: ""
 
   # Password for rcon
-  password: ""
+  password: null
 
   # rcon port
   port: 30100
