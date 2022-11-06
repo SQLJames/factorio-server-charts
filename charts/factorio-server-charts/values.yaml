@@ -1,4 +1,3 @@
-
 #### K8s configuration ####
 ## Number of replicas to create (only 1 is supported)
 replicaCount: 1
@@ -88,7 +87,6 @@ persistence:
   annotations: {}
 
 
-
 #### factorio application configuration ####
 mods:
   enabled: false
@@ -100,7 +98,7 @@ mods:
 # unofficial section is meant to just allow you to download and place folders into the mods folder.
 # we will not check version compatibility automatically with these downloads.
 # you can encounter an error if the file names dont match what the mod is expecting for example
-#Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod
+# Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod
 # /factorio/mods/Squeak-Through.zip doesn't match the expected Squeak Through_1.8.2.zip (case sensitive!)
   unofficial: []
 #     - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
@@ -214,7 +212,7 @@ rcon:
   port: 30100
 
 map_gen_settings:
-  #The inverse of water scale in the map generator GUI.
+  # The inverse of water scale in the map generator GUI.
   terrain_segmentation: 1
   #  The equivalent to water coverage in the map generator GUI. Higher coverage means
   #  more water in larger oceans.
