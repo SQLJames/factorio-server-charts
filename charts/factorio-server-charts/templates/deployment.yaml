@@ -61,15 +61,15 @@ spec:
               mountPath: /factorio
             - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
               mountPath: /deployed-configs
-            {{- if or (.Values.rcon.password)(.Values.rcon.passwordSecret) }}
+            {{- if or (.Values.rcon.password) (.Values.rcon.passwordSecret) }}
             - name: rcon
               mountPath: /rcon-pw
             {{- end }}
-            {{- if or (.Values.server_settings.accountSecret)(.Values.server_settings.username) }}
+            {{- if or (.Values.server_settings.accountSecret) (.Values.server_settings.username) }}
             - name: accountData
               mountPath: /account
             {{- end }}
-            {{- if or (.Values.serverPassword.game_password)(.Values.serverPassword.passwordSecret) }}
+            {{- if or (.Values.serverPassword.game_password) (.Values.serverPassword.passwordSecret) }}
             - name: gamePassword
               mountPath: /gamePassword
             {{- end }}
@@ -106,7 +106,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-          {{- if or (.Values.server_settings.accountSecret)(.Values.server_settings.username) }}
+          {{- if or (.Values.server_settings.accountSecret) (.Values.server_settings.username) }}
           - name: accountData
             mountPath: /account
           {{- end }}
@@ -134,7 +134,7 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       volumes:
-        {{- if or (.Values.server_settings.accountSecret)(.Values.server_settings.username) }}
+        {{- if or (.Values.server_settings.accountSecret) (.Values.server_settings.username) }}
         - name: accountData
           secret:
           {{- if .Values.server_settings.accountSecret }}
@@ -143,7 +143,7 @@ spec:
             secretName: {{ template "factorio-server-charts.fullname" . }}-account
           {{- end }}
         {{- end }}
-        {{- if or (.Values.rcon.password)(.Values.rcon.passwordSecret) }}
+        {{- if or (.Values.rcon.password) (.Values.rcon.passwordSecret) }}
         - name: rcon
           secret:
             {{- if .Values.rcon.passwordSecret }}
@@ -152,7 +152,7 @@ spec:
             secretName: {{ template "factorio-server-charts.fullname" . }}-rcon
             {{- end }}
         {{- end }}
-        {{- if or (.Values.serverPassword.game_password)(.Values.serverPassword.passwordSecret) }}
+        {{- if or (.Values.serverPassword.game_password) (.Values.serverPassword.passwordSecret) }}
         - name: gamePassword
           secret:
             {{- if .Values.serverPassword.passwordSecret }}
