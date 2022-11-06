@@ -30,13 +30,13 @@ service:
   # externalIPs:
   #  - "192.168.0.1"
   #  - "192.168.0.2"
-  # 
-  # 
+  #
+  #
   ## If you use "type: NodePort" set the port to a value you like in the range of 30000-32767. Leave it blank for a random port
   # nodePort: ""
   ## Examples:
   ## NodePort setup
-  
+
   ## ClusterIp setup
   # ClusterIP:
   #   port: 34197
@@ -97,10 +97,10 @@ mods:
 #     - Krastorio2
 #     - StorageTank2_Updated
 #     - early-robots
-# unofficial section is meant to just allow you to download and place folders into the mods folder. 
+# unofficial section is meant to just allow you to download and place folders into the mods folder.
 # we will not check version compatibility automatically with these downloads.
 # you can encounter an error if the file names dont match what the mod is expecting for example
-#Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod 
+#Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod
 # /factorio/mods/Squeak-Through.zip doesn't match the expected Squeak Through_1.8.2.zip (case sensitive!)
   unofficial: []
 #     - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
@@ -116,6 +116,31 @@ factorioServer:
   # lets the game know if you want to load the latest save
   load_latest_save: true
 
+account:
+  # Existing secret containing a valid factorio.com username and either a password or a token
+  # Example:
+  #
+  # apiVersion: v1
+  # kind: Secret
+  # metadata:
+  #   name: account-secret
+  # data:
+  #   username: <username in base64>
+  #   password: <password in base64>
+  #
+  # accountSecret: account-secret
+  accountSecret: ''
+  # Your factorio.com login credentials. Required for games with visibility public
+  username: ''
+  password: ''
+  # Authentication token. May be used instead of password above.
+  token: ''
+
+serverPassword:
+  # password required to log into the factorio server
+  game_password: ''
+  # Existing Secret containing a `game_password` data entry
+  passwordSecret: ''
 
 server_settings:
   # Your Instance Name
@@ -133,13 +158,7 @@ server_settings:
     public: false
     # Game will be broadcast on LAN
     lan: true
-  # Your factorio.com login credentials. Required for games with visibility public
-  username: ''
-  password: ''
-  # Authentication token. May be used instead of password above.
-  token: ''
-  # password required to log into the factorio server
-  game_password: ''
+
   # When set to true, the server will only allow clients that have a valid Factorio.com account
   require_user_verification: false
   # optional, default value is 0. 0 means unlimited.
@@ -184,7 +203,14 @@ server_settings:
 rcon:
   external: true
   type: LoadBalancer
-  password: "abcdefghijklmno"
+
+  # Existing secret containing a `password` data field
+  passwordSecret: ""
+
+  # Password for rcon
+  password: ""
+
+  # rcon port
   port: 30100
 
 map_gen_settings:

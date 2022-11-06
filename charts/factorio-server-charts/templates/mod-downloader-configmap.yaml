@@ -40,11 +40,11 @@ data:
     }
     function downloadofficial() {
         if [[ -z ${USERNAME:-} ]]; then
-          USERNAME="$(jq -j ".username" "/factorio/configs/server-settings.json")"
+          USERNAME="$(cat /account/username)"
         fi
 
         if [[ -z ${TOKEN:-} ]]; then
-          TOKEN="$(jq -j ".token" "/factorio/configs/server-settings.json")"
+          TOKEN="$(cat /account/token)"
         fi
 
         if [[ -z ${USERNAME:-} ]]; then
@@ -106,6 +106,6 @@ data:
     {{- end }}
 
 
-    
 
-    
+
+
