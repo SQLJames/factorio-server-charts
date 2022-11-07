@@ -1,0 +1,9 @@
+rcon:
+  type: ClusterIP
+  password: CHANGEMECHANGEME
+
+service:
+  type: ClusterIP
+
+server_settings:
+  name: "ClusterIP Test"

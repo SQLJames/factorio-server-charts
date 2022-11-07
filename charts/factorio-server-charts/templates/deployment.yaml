@@ -99,9 +99,9 @@ spec:
           runAsUser: 0
         ports:
         - name: factorio
-          containerPort: {{ .Values.service.port }}
+          containerPort: 34197
           protocol: UDP
-        - containerPort: {{ .Values.rcon.port }}
+        - containerPort: 27015
           protocol: TCP
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -125,8 +125,6 @@ spec:
           value: {{ .Values.factorioServer.generate_new_save | quote }}
         - name: LOAD_LATEST_SAVE
           value: {{ .Values.factorioServer.load_latest_save | quote }}
-        - name: PORT
-          value: {{ .Values.service.port | quote }}
         - name: CONFIG
           value: /factorio/configs
 {{- if .Values.nodeSelector }}

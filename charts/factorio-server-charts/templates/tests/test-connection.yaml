@@ -8,8 +8,8 @@ metadata:
     "helm.sh/hook": test-success
 spec:
   containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['{{ include "factorio-server-charts.fullname" . }}:{{ .Values.service.port }}']
+    - name: rcon
+      image: outdead/rcon
+      command: ['./rcon']
+      args: ['-a','{{ include "factorio-server-charts.fullname" . }}-rcon:{{ .Values.rcon.port }}','-p','{{ .Values.rcon.password }}','/s','Test']
   restartPolicy: Never

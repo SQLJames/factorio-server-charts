@@ -16,11 +16,13 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - name: factorio
-    port: {{ .Values.service.port }}
-    targetPort: {{ .Values.service.port }}
-    protocol: UDP
-    #nodePort: {{ .Values.service.port}}
+    - name: factorio
+      targetPort: 34197
+      port: {{ .Values.service.port }}
+      protocol: UDP
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.service.port }}
+      {{- end }}
   selector:
     app: {{ template "factorio-server-charts.fullname" . }}
 {{- if .Values.service.externalIPs }}
