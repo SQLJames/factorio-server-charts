@@ -97,6 +97,13 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
           runAsUser: 0
+        livenessProbe:
+          exec:
+            command:
+              - 'ps aux | grep factorio'
+          periodSeconds: 10
+          initialDelaySeconds: 5
+          failureThreshold: 3
         ports:
         - name: factorio
           containerPort: 34197
