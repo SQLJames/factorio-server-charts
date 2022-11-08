@@ -1,7 +1,23 @@
 #### K8s configuration ####
-## Number of replicas to create (only 1 is supported)
+## @section Kubernetes Parameters
+## @param replicaCount Number of replicas to create (only 1 is supported)
+## @param nodeSelector Node labels for pod assignment
+## @param resources.requests.cpu The requested cpu for the Factorio containers
+## @param resources.requests.memory The requested memory for the Factorio containers
+## @param resources.limits If you like to limit Factorio resources
+## @param strategy.type Strategy used to replace old pods
+## @param tolerations Tolerations for pod assignment
+## @param affinity Affinity rules for pod assignment
+
+
 replicaCount: 1
 
+
+#### Image Configuration ####
+## @section Image Parameters
+## @param image.repository Factorio image repository
+## @param image.tag Factorio image tag (immutable tags are recommended)
+## @param image.pullPolicy Factorio image pull policy
 image:
   repository: "factoriotools/factorio"
   ## Container image pull policy
@@ -16,12 +32,18 @@ nodeSelector: {}
 #  beta.kubernetes.io/arch: amd64
 #  kubernetes.io/hostname: your-cool-hostname
 
-
+#### Service Configuration ####
+## @section Service Parameters
+## @param service.type Factorio service type
+## @param service.port Factorio service port
+## @extra service.externalIPs [array] If you are able to map an external IP, set it here
+## @extra service.nodePort If you use "type: NodePort" set the port to a value you like in the range of 30000-32767. Leave it blank for a random port
+## @param service.annotations Additional custom annotations for Factorio service
 ## The service is a kind tricky, so factorio uses UDP, but not every cloud provider is able to route UDP traffic.
 ## I.e. your cloud provider has LoadBalancers without the ability for UDP protocol. Furthermore kubectl ist not able to route UDP Traffic
 ## ref: https://github.com/kubernetes/kubernetes/issues/47862
 ## You have to expose factorio on a NodePort and map a port between 30000 and 32767, but the native port is 34197. So you have always to specify the port in factorio.
-## The best way ist to define a ClusterIP service and define one or more externalIPs. Of course this IPs must be avaiable on the node the factorio pod runs on !
+## The best way ist to define a ClusterIP service and define one or more externalIPs. Of course this IPs must be available on the node the factorio pod runs on!
 service:
   type: NodePort
   port: 31497
@@ -52,6 +74,7 @@ resources:
     memory: 512Mi
     cpu: 500m
   ## If you like to limit factiorio resources
+  limits: {}
   # limits:
   #   memory: 1024Mi
   #   cpu: 1000m
@@ -73,6 +96,13 @@ tolerations: []
 # Affinity rules for pod assignment
 affinity: {}
 
+#### Persistence Configuration ####
+## @section Persistence Configuration
+## @param persistence.enabled Enable persistence using Persistent Volume Claims
+## @param persistence.dataDir.Size Persistent Volume size
+## @extra persistence.dataDir.existingClaim The name of an existing PVC to use for persistence
+## @param persistence.storageClassName Persistent Volume storage class
+## @param persistence.annotations Persistent Volume Claim annotations
 ## Sets the data persistence volume configuration
 ## IMPORTANT: If you do not setup a PV all your savegames will be lost on pod recreation or helm upgrade
 persistence:
@@ -87,7 +117,11 @@ persistence:
   annotations: {}
 
 
-#### factorio application configuration ####
+#### Factorio application configuration ####
+## @section Factorio Parameters
+## @param mods.enabled Enable mods
+## @param mods.portal List of official mods to be downloaded from Factorio Mod Portal
+## @param mods.unofficial List of unofficial mods name and url to download into the mods folder
 mods:
   enabled: false
 # in order to use the mods portal you will need to specify the username and token in the server_settings.
@@ -104,6 +138,10 @@ mods:
 #     - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
 #       name: "Squeak Through_1.8.2.zip"
 
+## @param factorioServer.save_name Factorio save name
+## @param factorioServer.generate_new_save Generate a new save if `save_name` is not found
+## @param factorioServer.update_mods_on_start Update mods on server start
+## @param factorioServer.load_latest_save Lets the game know if you want to load the latest save
 factorioServer:
   # specify a save name
   save_name: "replaceMe"
@@ -114,6 +152,10 @@ factorioServer:
   # lets the game know if you want to load the latest save
   load_latest_save: true
 
+## @param account.accountSecret Existing secret containing a valid factorio.com username and either a password or a token (or both)
+## @param account.username Factorio.com username, ignored if `account.accountSecret` is set
+## @param account.password Factorio.com password, ignored if `account.accountSecret` is set
+## @param account.token Factorio.com token, ignored if `account.accountSecret` is set
 account:
   # Existing secret containing a valid factorio.com username and either a password or a token
   # Example:
@@ -134,12 +176,37 @@ account:
   # Authentication token. May be used instead of password above.
   token: ''
 
+## @param serverPassword.passwordSecret Existing Secret containing a `game_password` data entry
+## @param serverPassword.game_password Password required to log into the factorio server. Ignored if `serverPassword.passwordSecret` is set
 serverPassword:
   # password required to log into the factorio server
   game_password: ''
   # Existing Secret containing a `game_password` data entry
   passwordSecret: ''
 
+## @param server_settings.name Factorio server name
+## @param server_settings.description Factorio server description
+## @param server_settings.tags Factorio server tags
+## @param server_settings.max_players Maximum number of players allowed, admins can join even a full server. 0 means unlimited
+## @param server_settings.visibility.public Publish the server on the official Factorio matching server
+## @param server_settings.visibility.lan Server will be visible in LAN
+## @param server_settings.require_user_verification When set to true, the server will only allow clients that have a valid Factorio.com account
+## @param server_settings.max_upload_in_kilobytes_per_second Optional, default value is 0. 0 means unlimited
+## @param server_settings.max_upload_slots Optional, default value is 5. 0 means unlimited
+## @param server_settings.minimum_latency_in_ticks Optional, one tick is 16ms in default speed, default value is 0. 0 means no minimum
+## @param server_settings.ignore_player_limit_for_returning_players Players that played on this map already can join even when the max player limit is reached
+## @param server_settings.allow_commands Possible values are true, false and admins-only
+## @param server_settings.autosave_interval Autosave interval in minutes
+## @param server_settings.autosave_slots Server autosave slots, it is cycled through when the server autosaves
+## @param server_settings.afk_autokick_interval How many minutes must pass before someone is kicked when doing nothing, 0 for never
+## @param server_settings.auto_pause Whether the server should be paused when no players are present
+## @param server_settings.only_admins_can_pause_the_game Specifies if anyone can pause or only admins
+## @param server_settings.autosave_only_on_server Whether autosaves should be performed only on the server or also on all connected clients. Default is true
+## @param server_settings.non_blocking_saving Highly experimental feature, enable only at your own risk
+## @param server_settings.minimum_segment_size Minimum network messages segment size
+## @param server_settings.minimum_segment_size_peer_count Minimum network messages segment count
+## @param server_settings.maximum_segment_size Maximum network messages segment size
+## @param server_settings.maximum_segment_size_peer_count Minimum network messages segment count
 server_settings:
   # Your Instance Name
   name: Factorio
@@ -197,6 +264,11 @@ server_settings:
   maximum_segment_size: 100
   maximum_segment_size_peer_count: 10
 
+## @param rcon.external Enable RCON external access (deploy RCON service)
+## @param rcon.type RCON service type
+## @param rcon.passwordSecret Existing secret containing a `password` data field
+## @param rcon.password Password for RCON, ignored if `rcon.passwordSecret` is set
+## @param rcon.port RCON service external port
 # Password and port for the rcon service
 rcon:
   external: true
@@ -211,6 +283,17 @@ rcon:
   # rcon port
   port: 30100
 
+## @param map_gen_settings.terrain_segmentation The inverse of water scale in the map generator GUI
+## @param map_gen_settings.water The equivalent to water coverage in the map generator GUI
+## @param map_gen_settings.width Map width in tiles; 0 means infinite
+## @param map_gen_settings.height Map height in tiles; 0 means infinite
+## @param map_gen_settings.starting_area Multiplier for biter free zone radius
+## @param map_gen_settings.peaceful_mode Enable Peaceful mode
+## @param map_gen_settings.autoplace_controls Override default ore, trees and enemy bases frequency, size and richness. Leave empty for default values. Supports including modded ores
+## @param map_gen_settings.cliff_settings.name Override default cliff prototype name
+## @param map_gen_settings.cliff_settings.cliff_elevation_0 Override elevation of first row of cliffs
+## @param map_gen_settings.cliff_settings.cliff_elevation_interval Override elevation difference between successive rows of cliffs
+## @param map_gen_settings.cliff_settings.richness Called cliff continuity in the map generator GUI. 0 will result in no cliffs, 10 will make all cliff rows completely solid
 map_gen_settings:
   # The inverse of water scale in the map generator GUI.
   terrain_segmentation: 1
@@ -225,39 +308,39 @@ map_gen_settings:
   # Multiplier for biter free zone radius
   starting_area: 1
   peaceful_mode: false
-  autoplace_controls:
-    coal:
-      frequency: 1
-      size: 1
-      richness: 1
-    stone:
-      frequency: 1
-      size: 1
-      richness: 1
-    copper-ore:
-      frequency: 1
-      size: 1
-      richness: 1
-    iron-ore:
-      frequency: 1
-      size: 1
-      richness: 1
-    uranium-ore:
-      frequency: 1
-      size: 1
-      richness: 1
-    crude-oil:
-      frequency: 1
-      size: 1
-      richness: 1
-    trees:
-      frequency: 1
-      size: 1
-      richness: 1
-    enemy-base:
-      frequency: 1
-      size: 1
-      richness: 1
+  autoplace_controls: []
+#    coal:
+#      frequency: 1
+#      size: 1
+#      richness: 1
+#    stone:
+#      frequency: 1
+#      size: 1
+#      richness: 1
+#    copper-ore:
+#      frequency: 1
+#      size: 1
+#      richness: 1
+#    iron-ore:
+#      frequency: 1
+#      size: 1
+#      richness: 1
+#    uranium-ore:
+#      frequency: 1
+#      size: 1
+#      richness: 1
+#    crude-oil:
+#      frequency: 1
+#      size: 1
+#      richness: 1
+#    trees:
+#      frequency: 1
+#      size: 1
+#      richness: 1
+#    enemy-base:
+#      frequency: 1
+#      size: 1
+#      richness: 1
   cliff_settings:
     # Name of the cliff prototype
     name: cliff
