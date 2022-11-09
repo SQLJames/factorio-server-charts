@@ -49,7 +49,7 @@ rcon:
   external: false
 
 nodeSelector:
-  kubernetes.io/hostname: "<name of your node>" #this makes it easier for firewall rules and makes sure things dont change
+  kubernetes.io/hostname: "<name of your node>" # this makes it easier for firewall rules and makes sure things dont change
 
 # making sure the game doesnt auto update on redeploy
 # https://hub.docker.com/r/factoriotools/factorio/
@@ -64,11 +64,11 @@ factorioServer:
   save_name: "<set me to your name>"
 
 #needed if playing online
-admin_list: #put your admins based on factorio names
+admin_list: [] # put your admins based on factorio names
 # - "john_doe"
 # - "jane_doe"
 
-white_list: #put the people you want to play with you based on factorio names
+white_list: [] # put the people you want to play with you based on factorio names
 # - "john_doe"
 # - "jane_doe"
 
@@ -138,7 +138,7 @@ If the Factorio server doesn't start, check that the logs don't have an error wi
 ### Kubernetes Parameters
 
 | Name                        | Description                                        | Value      |
-| --------------------------- | -------------------------------------------------- | ---------- |
+|-----------------------------|----------------------------------------------------|------------|
 | `replicaCount`              | Number of replicas to create (only 1 is supported) | `1`        |
 | `nodeSelector`              | Node labels for pod assignment                     | `{}`       |
 | `resources.requests.cpu`    | The requested cpu for the Factorio containers      | `500m`     |
@@ -151,7 +151,7 @@ If the Factorio server doesn't start, check that the logs don't have an error wi
 ### Image Parameters
 
 | Name               | Description                                         | Value                    |
-| ------------------ | --------------------------------------------------- | ------------------------ |
+|--------------------|-----------------------------------------------------|--------------------------|
 | `image.repository` | Factorio image repository                           | `factoriotools/factorio` |
 | `image.tag`        | Factorio image tag (immutable tags are recommended) | `latest`                 |
 | `image.pullPolicy` | Factorio image pull policy                          | `Always`                 |
@@ -159,7 +159,7 @@ If the Factorio server doesn't start, check that the logs don't have an error wi
 ### Service Parameters
 
 | Name                  | Description                                                                                                                | Value      |
-| --------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------|------------|
 | `service.type`        | Factorio service type                                                                                                      | `NodePort` |
 | `service.port`        | Factorio service port                                                                                                      | `31497`    |
 | `service.externalIPs` | If you are able to map an external IP, set it here                                                                         |            |
@@ -169,7 +169,7 @@ If the Factorio server doesn't start, check that the logs don't have an error wi
 ### Persistence Configuration
 
 | Name                                | Description                                        | Value  |
-| ----------------------------------- | -------------------------------------------------- | ------ |
+|-------------------------------------|----------------------------------------------------|--------|
 | `persistence.enabled`               | Enable persistence using Persistent Volume Claims  | `true` |
 | `persistence.dataDir.Size`          | Persistent Volume size                             | `1Gi`  |
 | `persistence.dataDir.existingClaim` | The name of an existing PVC to use for persistence |        |
