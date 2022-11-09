@@ -10,6 +10,21 @@ spec:
   containers:
     - name: rcon
       image: outdead/rcon
-      command: ['./rcon']
-      args: ['-a','{{ include "factorio-server-charts.fullname" . }}-rcon:{{ .Values.rcon.port }}','-p','{{ .Values.rcon.password }}','-t','rcon','-T','180s','/s','Test']
+      command:
+        - /bin/sh
+        - -ec
+        - |
+          RCONPW="$(cat /rconpw/rconpw)"
+          ./rcon -a {{ include "factorio-server-charts.fullname" . }}-rcon:{{ .Values.rcon.port }} -p $RCONPW -t rcon -T 180s /s Test
+      volumeMounts:
+        - mountPath: /rconpw
+          name: rconpw
   restartPolicy: Never
+  volumes:
+    - name: rconpw
+      secret:
+        {{- if .Values.rcon.passwordSecret }}
+        secretName: {{ .Values.rcon.passwordSecret }}
+        {{- else }}
+        secretName: {{ template "factorio-server-charts.fullname" . }}-rcon
+        {{- end }}
