@@ -5,11 +5,13 @@
 
 # factorio-server-charts
 
-[factorio-server-charts](https://github.com/SQLJames/factorio-server-charts) - A Helm chart for running factorio in kubernetes
+[factorio-server-charts](https://github.com/SQLJames/factorio-server-charts) - A Helm chart for running factorio in
+kubernetes
 
 ## Introduction
 
-This chart deploys Factorio on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart deploys Factorio on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package
+manager.
 
 ## Prerequisites
 
@@ -17,19 +19,28 @@ This chart deploys Factorio on a [Kubernetes](http://kubernetes.io) cluster usin
 - Networking knowledge to route the traffic to the appropriate port.
 
 ## Background
+
 This is something of a passion project for both learning kubernetes and because kubernetes is awesome.
-Because of this, I have only confirm this working on version 1.1.0 of Factorio, but I am sure it will work just fine on old versions as long as the schema doesn't change to much on the Secrets settings.
+Because of this, I have only confirm this working on version 1.1.0 of Factorio, but I am sure it will work just fine on
+old versions as long as the schema doesn't change to much on the Secrets settings.
 
-However, with the way this is implemented if you want to make it backwards compatible, you can update the appropriate sections in the values.yaml file to have the items added or removed to the json files that are required by factorio. Server-settings, map-gen-settings, etc.
+However, with the way this is implemented if you want to make it backwards compatible, you can update the appropriate
+sections in the values.yaml file to have the items added or removed to the json files that are required by factorio.
+Server-settings, map-gen-settings, etc.
 
-I did run into one issue on my setup, and I feel like it will likely come up again if people follow along. The Factorio server is defaulting to run on port 30000 instead of 34197 because the default nginx port range for ingress does not have 34197 within the normal port range. This shows the line of code that specifically is causing the issue inside kubernetes :)
+I did run into one issue on my setup, and I feel like it will likely come up again if people follow along. The Factorio
+server is defaulting to run on port 30000 instead of 34197 because the default nginx port range for ingress does not
+have 34197 within the normal port range. This shows the line of code that specifically is causing the issue inside
+kubernetes :)
 https://github.com/kubernetes/kubernetes/blob/59876df736c41093363f4c198aeec05e29c9c902/cmd/kube-apiserver/app/server.go#L197
 
 ## Releases
+
 Releases are published using the official helm release action in github.
 https://github.com/helm/chart-releaser-action
 
 ## Quick Start
+
 - Create a values.yaml file
 - Set the following options
 
@@ -54,17 +65,17 @@ factorioServer:
 
 #needed if playing online
 admin_list: #put your admins based on factorio names
-  # - "john_doe"
-  # - "jane_doe"
+# - "john_doe"
+# - "jane_doe"
 
 white_list: #put the people you want to play with you based on factorio names
-  # - "john_doe"
-  # - "jane_doe"
+# - "john_doe"
+# - "jane_doe"
 
 server_settings:
   name: Factorio-2022-01-kubernetes
   tags:
-  - modded
+    - modded
   visibility:
     public: true
   require_user_verification: true
@@ -97,22 +108,24 @@ serverPassword:
 ```
 
 ## Installing mods
-To Install mods, change `mods.enabled` to `true`, add any offical mods by their URL name under the `mods.portal` section, and any unofficial mods in the `mods.unofficial`section.
+
+To Install mods, change `mods.enabled` to `true`, add any offical mods by their URL name under the `mods.portal`
+section, and any unofficial mods in the `mods.unofficial`section.
 
 ```yaml
 mods:
   enabled: true
-# in order to use the mods portal you will need to specify the username and token in the server_settings.
-# name is determined by the url, it will be the last part of the url, not the title of the mod.
+  # in order to use the mods portal you will need to specify the username and token in the server_settings.
+  # name is determined by the url, it will be the last part of the url, not the title of the mod.
   portal:
     - Krastorio2
     - StorageTank2_Updated
     - early-robots
-# unofficial section is meant to just allow you to download and place folders into the mods folder.
-# we will not check version compatibility automatically with these downloads.
-# you can encounter an error if the file names dont match what the mod is expecting for example
-#Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod
-# /factorio/mods/Squeak-Through.zip doesn't match the expected Squeak Through_1.8.2.zip (case sensitive!)
+  # unofficial section is meant to just allow you to download and place folders into the mods folder.
+  # we will not check version compatibility automatically with these downloads.
+  # you can encounter an error if the file names dont match what the mod is expecting for example
+  #Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod
+  # /factorio/mods/Squeak-Through.zip doesn't match the expected Squeak Through_1.8.2.zip (case sensitive!)
   unofficial:
     - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
       name: "Squeak Through_1.8.2.zip"
@@ -122,5 +135,122 @@ If the Factorio server doesn't start, check that the logs don't have an error wi
 
 ## Parameters
 
+### Kubernetes Parameters
+
+| Name                        | Description                                        | Value      |
+| --------------------------- | -------------------------------------------------- | ---------- |
+| `replicaCount`              | Number of replicas to create (only 1 is supported) | `1`        |
+| `nodeSelector`              | Node labels for pod assignment                     | `{}`       |
+| `resources.requests.cpu`    | The requested cpu for the Factorio containers      | `500m`     |
+| `resources.requests.memory` | The requested memory for the Factorio containers   | `512Mi`    |
+| `resources.limits`          | If you like to limit Factorio resources            | `{}`       |
+| `strategy.type`             | Strategy used to replace old pods                  | `Recreate` |
+| `tolerations`               | Tolerations for pod assignment                     | `[]`       |
+| `affinity`                  | Affinity rules for pod assignment                  | `{}`       |
+
+### Image Parameters
+
+| Name               | Description                                         | Value                    |
+| ------------------ | --------------------------------------------------- | ------------------------ |
+| `image.repository` | Factorio image repository                           | `factoriotools/factorio` |
+| `image.tag`        | Factorio image tag (immutable tags are recommended) | `latest`                 |
+| `image.pullPolicy` | Factorio image pull policy                          | `Always`                 |
+
+### Service Parameters
+
+| Name                  | Description                                                                                                                | Value      |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `service.type`        | Factorio service type                                                                                                      | `NodePort` |
+| `service.port`        | Factorio service port                                                                                                      | `31497`    |
+| `service.externalIPs` | If you are able to map an external IP, set it here                                                                         |            |
+| `service.nodePort`    | If you use "type: NodePort" set the port to a value you like in the range of 30000-32767. Leave it blank for a random port |            |
+| `service.annotations` | Additional custom annotations for Factorio service                                                                         | `{}`       |
+
+### Persistence Configuration
+
+| Name                                | Description                                        | Value  |
+| ----------------------------------- | -------------------------------------------------- | ------ |
+| `persistence.enabled`               | Enable persistence using Persistent Volume Claims  | `true` |
+| `persistence.dataDir.Size`          | Persistent Volume size                             | `1Gi`  |
+| `persistence.dataDir.existingClaim` | The name of an existing PVC to use for persistence |        |
+| `persistence.storageClassName`      | Persistent Volume storage class                    | `""`   |
+| `persistence.annotations`           | Persistent Volume Claim annotations                | `{}`   |
+
+### Factorio Parameters
+
+| Name                                                           | Description                                                                                                                              | Value                            |
+|----------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------|
+| `mods.enabled`                                                 | Enable mods                                                                                                                              | `false`                          |
+| `mods.portal`                                                  | List of official mods to be downloaded from Factorio Mod Portal                                                                          | `[]`                             |
+| `mods.unofficial`                                              | List of unofficial mods name and url to download into the mods folder                                                                    | `[]`                             |
+| `factorioServer.save_name`                                     | Factorio save name                                                                                                                       | `replaceMe`                      |
+| `factorioServer.generate_new_save`                             | Generate a new save if `save_name` is not found                                                                                          | `true`                           |
+| `factorioServer.update_mods_on_start`                          | Update mods on server start                                                                                                              | `false`                          |
+| `factorioServer.load_latest_save`                              | Lets the game know if you want to load the latest save                                                                                   | `true`                           |
+| `account.accountSecret`                                        | Existing secret containing a valid factorio.com username and either a password or a token (or both)                                      | `""`                             |
+| `account.username`                                             | Factorio.com username, ignored if `account.accountSecret` is set                                                                         | `""`                             |
+| `account.password`                                             | Factorio.com password, ignored if `account.accountSecret` is set                                                                         | `""`                             |
+| `account.token`                                                | Factorio.com token, ignored if `account.accountSecret` is set                                                                            | `""`                             |
+| `serverPassword.passwordSecret`                                | Existing Secret containing a `game_password` data entry                                                                                  | `""`                             |
+| `serverPassword.game_password`                                 | Password required to log into the factorio server. Ignored if `serverPassword.passwordSecret` is set                                     | `""`                             |
+| `server_settings.name`                                         | Factorio server name                                                                                                                     | `Factorio`                       |
+| `server_settings.description`                                  | Factorio server description                                                                                                              | `Factorio running on Kubernetes` |
+| `server_settings.tags`                                         | Factorio server tags                                                                                                                     | `["game","tags"]`                |
+| `server_settings.max_players`                                  | Maximum number of players allowed, admins can join even a full server. 0 means unlimited                                                 | `0`                              |
+| `server_settings.visibility.public`                            | Publish the server on the official Factorio matching server                                                                              | `false`                          |
+| `server_settings.visibility.lan`                               | Server will be visible in LAN                                                                                                            | `true`                           |
+| `server_settings.require_user_verification`                    | When set to true, the server will only allow clients that have a valid Factorio.com account                                              | `false`                          |
+| `server_settings.max_upload_in_kilobytes_per_second`           | Optional, default value is 0. 0 means unlimited                                                                                          | `0`                              |
+| `server_settings.max_upload_slots`                             | Optional, default value is 5. 0 means unlimited                                                                                          | `5`                              |
+| `server_settings.minimum_latency_in_ticks`                     | Optional, one tick is 16ms in default speed, default value is 0. 0 means no minimum                                                      | `0`                              |
+| `server_settings.ignore_player_limit_for_returning_players`    | Players that played on this map already can join even when the max player limit is reached                                               | `false`                          |
+| `server_settings.allow_commands`                               | Possible values are true, false and admins-only                                                                                          | `admins-only`                    |
+| `server_settings.autosave_interval`                            | Autosave interval in minutes                                                                                                             | `10`                             |
+| `server_settings.autosave_slots`                               | Server autosave slots, it is cycled through when the server autosaves                                                                    | `5`                              |
+| `server_settings.afk_autokick_interval`                        | How many minutes must pass before someone is kicked when doing nothing, 0 for never                                                      | `0`                              |
+| `server_settings.auto_pause`                                   | Whether the server should be paused when no players are present                                                                          | `true`                           |
+| `server_settings.only_admins_can_pause_the_game`               | Specifies if anyone can pause or only admins                                                                                             | `true`                           |
+| `server_settings.autosave_only_on_server`                      | Whether autosaves should be performed only on the server or also on all connected clients. Default is true                               | `true`                           |
+| `server_settings.non_blocking_saving`                          | Highly experimental feature, enable only at your own risk                                                                                | `false`                          |
+| `server_settings.minimum_segment_size`                         | Minimum network messages segment size                                                                                                    | `25`                             |
+| `server_settings.minimum_segment_size_peer_count`              | Minimum network messages segment count                                                                                                   | `20`                             |
+| `server_settings.maximum_segment_size`                         | Maximum network messages segment size                                                                                                    | `100`                            |
+| `server_settings.maximum_segment_size_peer_count`              | Minimum network messages segment count                                                                                                   | `10`                             |
+| `rcon.external`                                                | Enable RCON external access (deploy RCON service)                                                                                        | `true`                           |
+| `rcon.type`                                                    | RCON service type                                                                                                                        | `LoadBalancer`                   |
+| `rcon.passwordSecret`                                          | Existing secret containing a `password` data field                                                                                       | `""`                             |
+| `rcon.password`                                                | Password for RCON, ignored if `rcon.passwordSecret` is set                                                                               | `CHANGEMECHANGEME`               |
+| `rcon.port`                                                    | RCON service external port                                                                                                               | `30100`                          |
+| `map_gen_settings.terrain_segmentation`                        | The inverse of water scale in the map generator GUI                                                                                      | `1`                              |
+| `map_gen_settings.water`                                       | The equivalent to water coverage in the map generator GUI                                                                                | `1`                              |
+| `map_gen_settings.width`                                       | Map width in tiles; 0 means infinite                                                                                                     | `0`                              |
+| `map_gen_settings.height`                                      | Map height in tiles; 0 means infinite                                                                                                    | `0`                              |
+| `map_gen_settings.starting_area`                               | Multiplier for biter free zone radius                                                                                                    | `1`                              |
+| `map_gen_settings.peaceful_mode`                               | Enable Peaceful mode                                                                                                                     | `false`                          |
+| `map_gen_settings.autoplace_controls`                          | Override default ore, trees and enemy bases frequency, size and richness. Leave empty for default values. Supports including modded ores | `{}`                             |
+| `map_gen_settings.cliff_settings.name`                         | Override default cliff prototype name                                                                                                    | `cliff`                          |
+| `map_gen_settings.cliff_settings.cliff_elevation_0`            | Override elevation of first row of cliffs                                                                                                | `10`                             |
+| `map_gen_settings.cliff_settings.cliff_elevation_interval`     | Override elevation difference between successive rows of cliffs                                                                          | `40`                             |
+| `map_gen_settings.cliff_settings.richness`                     | Called cliff continuity in the map generator GUI. 0 will result in no cliffs, 10 will make all cliff rows completely solid               | `1`                              |
+| `map_gen_settings.property_expression_names`                   | Overrides for property value generators (map type)                                                                                       |                                  |
+| `map_gen_settings.starting_points`                             | List of starting points for the map                                                                                                      |                                  |
+| `map_gen_settings.seed`                                        | Map RNG Seed                                                                                                                             | `nil`                            |
+| `map_settings.difficulty_settings.recipe_difficulty`           | Enable expensive crafting recipe                                                                                                         | `0`                              |
+| `map_settings.difficulty_settings.technology_difficulty`       | Enable expensive research                                                                                                                | `0`                              |
+| `map_settings.difficulty_settings.technology_price_multiplier` | Research cost multiplier                                                                                                                 | `1`                              |
+| `map_settings.difficulty_settings.research_queue_setting`      | Possibile values: `after-victory`, `always`, `never`                                                                                     | `after-victory`                  |
+| `map_settings.pollution.enabled`                               | Enable pollution. Check values.yaml to know what pollution values you can override                                                       |                                  |
+| `map_settings.enemy_evolution.enabled`                         | Enable enemy evolution. Check values.yaml to know what enemy evolution values you can override                                           |                                  |
+| `map_settings.enemy_expansion.enabled`                         | Enable enemy expansion. Check values.yaml to know what enemy expansion values you can override                                           |                                  |
+| `map_settings.unit_group`                                      | Override default unit group values. Check values.yaml to know what values you can override                                               |                                  |
+| `map_settings.steering`                                        | Override default steering values. Check values.yaml to know what values you can override                                                 |                                  |
+| `map_settings.path_finder`                                     | Override default pathfinder values. Check values.yaml to know what values you can override                                               |                                  |
+| `map_settings.max_failed_behavior_count`                       | If a behavior fails this many times, the enemy (or enemy group) is destroyed. This solves biters stuck within their own base.            | `3`                              |
+| `admin_list`                                                   | Admin list                                                                                                                               | `[]`                             |
+| `white_list`                                                   | Whitelist                                                                                                                                | `[]`                             |
+| `ban_list`                                                     | Ban list                                                                                                                                 | `[]`                             |
+
 ## Readme
-Readme was generated from the [chart-doc-gen](https://github.com/kubepack/chart-doc-gen) tool.
+
+Readme was generated using [chart-doc-gen](https://github.com/kubepack/chart-doc-gen) tool
+and [readme-generator-for-helm](https://github.com/bitnami-labs/readme-generator-for-helm).

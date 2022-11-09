@@ -294,6 +294,11 @@ rcon:
 ## @param map_gen_settings.cliff_settings.cliff_elevation_0 Override elevation of first row of cliffs
 ## @param map_gen_settings.cliff_settings.cliff_elevation_interval Override elevation difference between successive rows of cliffs
 ## @param map_gen_settings.cliff_settings.richness Called cliff continuity in the map generator GUI. 0 will result in no cliffs, 10 will make all cliff rows completely solid
+## @skip map_gen_settings.property_expression_names
+## @extra map_gen_settings.property_expression_names [object] Overrides for property value generators (map type)
+## @skip map_gen_settings.starting_points
+## @extra map_gen_settings.starting_points [array] List of starting points for the map
+## @param map_gen_settings.seed Map RNG Seed
 map_gen_settings:
   # The inverse of water scale in the map generator GUI.
   terrain_segmentation: 1
@@ -371,6 +376,23 @@ map_gen_settings:
   # Use null for a random seed, number for a specific seed.
   seed: null
 
+## @param map_settings.difficulty_settings.recipe_difficulty Enable expensive crafting recipe
+## @param map_settings.difficulty_settings.technology_difficulty Enable expensive research
+## @param map_settings.difficulty_settings.technology_price_multiplier Research cost multiplier
+## @param map_settings.difficulty_settings.research_queue_setting Possibile values: `after-victory`, `always`, `never`
+## @skip map_settings.pollution
+## @extra map_settings.pollution.enabled Enable pollution. Check values.yaml to know what pollution values you can override
+## @skip map_settings.enemy_evolution
+## @extra map_settings.enemy_evolution.enabled Enable enemy evolution. Check values.yaml to know what enemy evolution values you can override
+## @skip map_settings.enemy_expansion
+## @extra map_settings.enemy_expansion.enabled Enable enemy expansion. Check values.yaml to know what enemy expansion values you can override
+## @skip map_settings.unit_group
+## @extra map_settings.unit_group [object] Override default unit group values. Check values.yaml to know what values you can override
+## @skip map_settings.steering
+## @extra map_settings.steering [object] Override default steering values. Check values.yaml to know what values you can override
+## @skip map_settings.path_finder
+## @extra map_settings.path_finder [object] Override default pathfinder values. Check values.yaml to know what values you can override
+## @param map_settings.max_failed_behavior_count If a behavior fails this many times, the enemy (or enemy group) is destroyed. This solves biters stuck within their own base.
 map_settings:
   difficulty_settings:
     recipe_difficulty: 0
@@ -479,14 +501,17 @@ map_settings:
     negative_path_cache_delay_interval: 20
   max_failed_behavior_count: 3
 
-admin_list:
+## @param admin_list Admin list
+## @param white_list Whitelist
+## @param ban_list Ban list
+admin_list: []
   # - "john_doe"
   # - "jane_doe"
 
-white_list:
+white_list: []
   # - "john_doe"
   # - "jane_doe"
 
-ban_list:
+ban_list: []
   # - "john_doe"
   # - "jane_doe"
