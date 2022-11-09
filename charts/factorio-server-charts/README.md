@@ -64,11 +64,11 @@ factorioServer:
   save_name: "<set me to your name>"
 
 #needed if playing online
-admin_list: [] # put your admins based on factorio names
+admin_list: [ ] # put your admins based on factorio names
 # - "john_doe"
 # - "jane_doe"
 
-white_list: [] # put the people you want to play with you based on factorio names
+white_list: [ ] # put the people you want to play with you based on factorio names
 # - "john_doe"
 # - "jane_doe"
 
