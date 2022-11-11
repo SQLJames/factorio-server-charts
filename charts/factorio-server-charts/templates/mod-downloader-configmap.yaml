@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-  #credit to the factoriotools/factorio-docker team, most of this logic came from them
+  # credit to the factoriotools/factorio-docker team, most of this logic came from them
   # https://github.com/factoriotools/factorio-docker/blob/master/docker/files/update-mods.sh
   mod-downloader.sh: |
     modDir=/factorio/mods
@@ -56,7 +56,7 @@ data:
         fi
         MOD_INFO_URL="$MOD_BASE_URL/api/mods/$1"
         MOD_INFO_JSON=$(curl --silent "$MOD_INFO_URL")
-        #echo "$MOD_INFO_URL $MOD_INFO_JSON"
+    #    echo "$MOD_INFO_URL $MOD_INFO_JSON"
         if ! echo "$MOD_INFO_JSON" | jq -e .name >/dev/null; then
           print_success "  Custom mod not on $MOD_BASE_URL, skipped."
           return 0
@@ -98,12 +98,15 @@ data:
     for key in "${!unofficialMods[@]}"; do
       downloadUnofficial "${unofficialMods[$key]}" $key
     done
-    {{- if and .Values.server_settings.username .Values.server_settings.token }}
-    echo "server is running version $VERSION"
-    for officialMod in ${officialMods[*]}; do
-    downloadofficial $officialMod $USERNAME $TOKEN
-    done
-    {{- end }}
+
+    if [ -f "/account/username" ]; then
+      if [ -f "/account/token" ]; then
+        echo "server is running version $VERSION"
+        for officialMod in ${officialMods[*]}; do
+          downloadofficial $officialMod $USERNAME $TOKEN
+        done
+      fi
+    fi
 
 
 
