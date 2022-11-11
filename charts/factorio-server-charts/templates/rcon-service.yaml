@@ -15,10 +15,13 @@ metadata:
 spec:
   type: {{ .Values.rcon.type }}
   ports:
-  - name: rcon
-    port: {{ .Values.rcon.port }}
-    nodePort: {{ .Values.rcon.port}}
-    protocol: TCP
+    - name: rcon
+      port: {{ .Values.rcon.port }}
+      targetPort: 27015
+    {{- if eq .Values.rcon.type "NodePort" }}
+      nodePort: {{ .Values.rcon.port}}
+    {{- end }}
+      protocol: TCP
   selector:
     app: {{ template "factorio-server-charts.fullname" . }}
 {{- end }}

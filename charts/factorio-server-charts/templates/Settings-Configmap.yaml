@@ -10,8 +10,6 @@ metadata:
 data:
   server-settings.json: |
 {{ toJson .Values.server_settings | indent 4 }}
-  rconpw: |
-{{ .Values.rcon.password | indent 4 }}
   map-gen-settings.json: |
 {{ toJson .Values.map_gen_settings | indent 4 }}
   map-settings.json: |

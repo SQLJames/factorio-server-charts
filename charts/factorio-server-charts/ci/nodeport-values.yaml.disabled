@@ -1,0 +1,6 @@
+rcon:
+  type: NodePort
+  password: CHANGEMECHANGEME
+
+server_settings:
+  name: "NodePort Test"

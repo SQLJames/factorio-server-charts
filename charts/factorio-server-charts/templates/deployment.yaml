@@ -19,7 +19,11 @@ spec:
       labels:
         app: {{ template "factorio-server-charts.fullname" . }}
     spec:
-      hostNetwork: true 
+      {{- if eq .Values.service.type "NodePort" }}
+      hostNetwork: true
+      {{- else }}
+      hostNetwork: false
+      {{- end }}
       initContainers:
         - name: volume-permissions-serversettingsconfig
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -31,6 +35,21 @@ spec:
               mkdir -p /factorio/configs
               mkdir -p /factorio/config
               cp --verbose /deployed-configs/* /factorio/configs
+              if [ -f "/rcon-pw/rconpw" ]; then
+                cp --verbose /rcon-pw/rconpw /factorio/configs/rconpw
+              fi
+              if [ -f "/account/username" ]; then
+                jq -M --rawfile username /account/username '.username=($username|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
+                if [ -f "/account/password" ]; then
+                  jq -M --rawfile password /account/password '.password=($password|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
+                fi
+                if [ -f "/account/token" ]; then
+                  jq -M --rawfile token /account/token '.token=($token|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
+                fi
+              fi
+              if [ -f "/gamePassword/game_password" ]; then
+                jq -M --rawfile game_password /gamePassword/game_password '.game_password=(game_password|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
+              fi
               #sleep 100
               chown -vR factorio:factorio /factorio
               chmod -vR 777 /factorio/configs
@@ -42,6 +61,18 @@ spec:
               mountPath: /factorio
             - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
               mountPath: /deployed-configs
+            {{- if or (.Values.rcon.password) (.Values.rcon.passwordSecret) }}
+            - name: rcon
+              mountPath: /rcon-pw
+            {{- end }}
+            {{- if or (.Values.server_settings.accountSecret) (.Values.server_settings.username) }}
+            - name: accountData
+              mountPath: /account
+            {{- end }}
+            {{- if or (.Values.serverPassword.game_password) (.Values.serverPassword.passwordSecret) }}
+            - name: gamePassword
+              mountPath: /gamePassword
+            {{- end }}
         {{- if .Values.mods.enabled }}
         - name: download-factorio-mods
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -66,15 +97,26 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         securityContext:
           runAsUser: 0
+        livenessProbe:
+          exec:
+            command:
+              - 'ps aux | grep factorio'
+          periodSeconds: 10
+          initialDelaySeconds: 5
+          failureThreshold: 3
         ports:
         - name: factorio
-          containerPort: {{ .Values.service.port }}
+          containerPort: 34197
           protocol: UDP
-        - containerPort: {{ .Values.rcon.port }}
+        - containerPort: 27015
           protocol: TCP
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
+          {{- if or (.Values.server_settings.accountSecret) (.Values.server_settings.username) }}
+          - name: accountData
+            mountPath: /account
+          {{- end }}
           - name: datadir
             mountPath: /factorio
         env:
@@ -90,8 +132,6 @@ spec:
           value: {{ .Values.factorioServer.generate_new_save | quote }}
         - name: LOAD_LATEST_SAVE
           value: {{ .Values.factorioServer.load_latest_save | quote }}
-        - name: PORT
-          value: {{ .Values.service.port | quote }}
         - name: CONFIG
           value: /factorio/configs
 {{- if .Values.nodeSelector }}
@@ -99,6 +139,33 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       volumes:
+        {{- if or (.Values.server_settings.accountSecret) (.Values.server_settings.username) }}
+        - name: accountData
+          secret:
+          {{- if .Values.server_settings.accountSecret }}
+            secretName: {{ .Values.server_settings.accountSecret }}
+          {{- else}}
+            secretName: {{ template "factorio-server-charts.fullname" . }}-account
+          {{- end }}
+        {{- end }}
+        {{- if or (.Values.rcon.password) (.Values.rcon.passwordSecret) }}
+        - name: rcon
+          secret:
+            {{- if .Values.rcon.passwordSecret }}
+            secretName: {{ .Values.rcon.passwordSecret }}
+            {{- else }}
+            secretName: {{ template "factorio-server-charts.fullname" . }}-rcon
+            {{- end }}
+        {{- end }}
+        {{- if or (.Values.serverPassword.game_password) (.Values.serverPassword.passwordSecret) }}
+        - name: gamePassword
+          secret:
+            {{- if .Values.serverPassword.passwordSecret }}
+            secretName: {{ .Values.serverPassword.passwordSecret }}
+            {{- else }}
+            secretName: {{ template "factorio-server-charts.fullname" . }}-account
+            {{- end }}
+        {{- end }}
         - name: datadir
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:

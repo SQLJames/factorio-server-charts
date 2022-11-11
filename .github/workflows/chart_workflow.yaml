@@ -7,7 +7,6 @@ jobs:
   lint-test:
     name: "Lint and Test"
     runs-on: ubuntu-22.04
-    if: github.ref != 'refs/heads/main'
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2.4.2
