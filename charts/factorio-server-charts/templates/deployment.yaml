@@ -74,7 +74,7 @@ spec:
               mountPath: /account
             {{- end }}
             {{- if or (.Values.serverPassword.game_password) (.Values.serverPassword.passwordSecret) }}
-            - name: gamePassword
+            - name: game-password
               mountPath: /gamePassword
             {{- end }}
         {{- if .Values.mods.enabled }}
@@ -166,12 +166,12 @@ spec:
             {{- end }}
         {{- end }}
         {{- if or (.Values.serverPassword.game_password) (.Values.serverPassword.passwordSecret) }}
-        - name: gamePassword
+        - name: game-password
           secret:
             {{- if .Values.serverPassword.passwordSecret }}
             secretName: {{ .Values.serverPassword.passwordSecret }}
             {{- else }}
-            secretName: {{ template "factorio-server-charts.fullname" . }}-account
+            secretName: {{ template "factorio-server-charts.fullname" . }}-password
             {{- end }}
         {{- end }}
         - name: datadir

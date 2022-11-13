@@ -7,3 +7,6 @@ service:
 
 server_settings:
   name: "ClusterIP Test"
+
+serverPassword:
+  game_password: 'CHANGEME'
