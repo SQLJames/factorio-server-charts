@@ -19,6 +19,10 @@ spec:
       labels:
         app: {{ template "factorio-server-charts.fullname" . }}
     spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: '1'
       {{- if eq .Values.service.type "NodePort" }}
       hostNetwork: true
       {{- else }}
@@ -65,8 +69,8 @@ spec:
             - name: rcon
               mountPath: /rcon-pw
             {{- end }}
-            {{- if or (.Values.server_settings.accountSecret) (.Values.server_settings.username) }}
-            - name: accountData
+            {{- if or (.Values.account.accountSecret) (.Values.account.username) }}
+            - name: account-data
               mountPath: /account
             {{- end }}
             {{- if or (.Values.serverPassword.game_password) (.Values.serverPassword.passwordSecret) }}
@@ -90,6 +94,10 @@ spec:
               mountPath: /factorio
             - name: {{ template "factorio-server-charts.fullname" . }}-mod-downloader-configmap
               mountPath: /scripts
+            {{- if or (.Values.account.accountSecret) (.Values.account.username) }}
+            - name: account-data
+              mountPath: /account
+            {{- end }}
       {{- end }}
       containers:
       - name: {{ template "factorio-server-charts.fullname" . }}
@@ -100,7 +108,7 @@ spec:
         livenessProbe:
           exec:
             command:
-              - 'ps aux | grep factorio'
+              - '/bin/ps aux | /bin/grep factorio'
           periodSeconds: 10
           initialDelaySeconds: 5
           failureThreshold: 3
@@ -113,8 +121,8 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-          {{- if or (.Values.server_settings.accountSecret) (.Values.server_settings.username) }}
-          - name: accountData
+          {{- if or (.Values.account.accountSecret) (.Values.account.username) }}
+          - name: account-data
             mountPath: /account
           {{- end }}
           - name: datadir
@@ -139,11 +147,11 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       volumes:
-        {{- if or (.Values.server_settings.accountSecret) (.Values.server_settings.username) }}
-        - name: accountData
+        {{- if or (.Values.account.accountSecret) (.Values.account.username) }}
+        - name: account-data
           secret:
-          {{- if .Values.server_settings.accountSecret }}
-            secretName: {{ .Values.server_settings.accountSecret }}
+          {{- if .Values.account.accountSecret }}
+            secretName: {{ .Values.account.accountSecret }}
           {{- else}}
             secretName: {{ template "factorio-server-charts.fullname" . }}-account
           {{- end }}
