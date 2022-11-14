@@ -58,8 +58,10 @@ spec:
               chown -vR factorio:factorio /factorio
               chmod -vR 777 /factorio/configs
               ls -alth /factorio
+          {{- with .Values.securityContext }}
           securityContext:
-            runAsUser: 0
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: datadir
               mountPath: /factorio
@@ -87,8 +89,10 @@ spec:
             - |
               mkdir -p /factorio/mods
               bash /scripts/mod-downloader.sh
+          {{- with .Values.securityContext }}
           securityContext:
-            runAsUser: 0
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: datadir
               mountPath: /factorio
@@ -103,8 +107,10 @@ spec:
       - name: {{ template "factorio-server-charts.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.securityContext }}
         securityContext:
-          runAsUser: 0
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         livenessProbe:
           exec:
             command:

@@ -8,10 +8,12 @@
 ## @param strategy.type Strategy used to replace old pods
 ## @param tolerations Tolerations for pod assignment
 ## @param affinity Affinity rules for pod assignment
-
+## @param securityContext Useful for fixing file permissions. See official [docs](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/).
 
 replicaCount: 1
 
+securityContext:
+  runAsUser: 0
 
 #### Image Configuration ####
 ## @section Image Parameters
