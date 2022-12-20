@@ -1,5 +1,25 @@
 ## Changelog
 
+### V1.2.0
+
+#### Non-Breaking Changes
+
+- Added `securityContext` field to values.yaml
+
+### V1.1.2
+
+#### Non-Breaking Changes
+
+- Fixed a bug where the `game-password` volume had an invalid name
+
+### V1.1.1
+
+#### Non-Breaking Changes
+
+- Fixed a bug where the `account-data` volume had an invalid name
+- Extended the pod's DNS config to ensure correct DNS resolution in certain
+  environments
+
 ### V1.1.0
 
 #### Breaking Changes
