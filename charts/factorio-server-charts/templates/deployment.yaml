@@ -114,7 +114,9 @@ spec:
         livenessProbe:
           exec:
             command:
-              - '/bin/ps aux | /bin/grep factorio'
+              - /bin/bash
+              - -ec
+              - '/bin/ps aux | /bin/grep -v grep | /bin/grep factorio'
           periodSeconds: 10
           initialDelaySeconds: 5
           failureThreshold: 3
