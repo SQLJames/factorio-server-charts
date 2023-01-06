@@ -66,7 +66,18 @@ service:
   ## LoadBalancer setup
   # type: LoadBalancer
   annotations: {}
+  ## Docker-Desktop with hostNetwork problem occurred
+  hostNetwork: true
 
+## @param portFixer.enabled enable Factorio port fixer for public game
+## @param portFixer.remote use remote Factorio port fixer or use local Factorio port fixer
+## @param portFixer.remoteIp Factorio port fixer remote server ip address
+portFixer:
+  enabled: false
+  # warning: only 34197 port works
+  remote: false
+  # sample factorio port fixer server
+  remoteIp: "144.24.94.63"
 
 ## Compute Resources required by the operator container
 resources:

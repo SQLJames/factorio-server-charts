@@ -23,11 +23,32 @@ spec:
         options:
           - name: ndots
             value: '1'
-      {{- if eq .Values.service.type "NodePort" }}
+      {{- if and .Values.service.hostNetwork (eq .Values.service.type "NodePort") }}
       hostNetwork: true
       {{- else }}
       hostNetwork: false
       {{- end }}
+
+      {{- if (and .Values.portFixer.enabled .Values.portFixer.remote) }}
+      hostAliases:
+      - ip: {{ .Values.portFixer.remoteIp | quote }}
+        hostnames:
+        - "pingpong"
+        - "pingpong1.factorio.com"
+        - "pingpong2.factorio.com"
+        - "pingpong3.factorio.com"
+        - "pingpong4.factorio.com"
+      {{- else if (and .Values.portFixer.enabled (not .Values.portFixer.remote)) }}
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "pingpong"
+        - "pingpong1.factorio.com"
+        - "pingpong2.factorio.com"
+        - "pingpong3.factorio.com"
+        - "pingpong4.factorio.com"
+      {{- end }}
+
       initContainers:
         - name: volume-permissions-serversettingsconfig
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -120,9 +141,20 @@ spec:
           periodSeconds: 10
           initialDelaySeconds: 5
           failureThreshold: 3
+        {{- if and .Values.portFixer.enabled (not .Values.portFixer.remote) }}
+        readinessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -ec
+              - 'curl --fail localhost:34197/health || exit 1'
+          periodSeconds: 10
+          initialDelaySeconds: 5
+          failureThreshold: 3
+        {{- end }}
         ports:
         - name: factorio
-          containerPort: 34197
+          containerPort: {{ .Values.service.port }}
           protocol: UDP
         - containerPort: 27015
           protocol: TCP
@@ -150,6 +182,25 @@ spec:
           value: {{ .Values.factorioServer.load_latest_save | quote }}
         - name: CONFIG
           value: /factorio/configs
+        - name: BIND
+          value: "0.0.0.0"
+        - name: PORT
+          value: "{{ .Values.service.port }}"
+      {{- if and .Values.portFixer.enabled (not .Values.portFixer.remote) }}
+      - name: {{ template "factorio-server-charts.fullname" . }}-sidecar
+        image: "ghcr.io/zcube/factorio-port-fixer:latest"
+        command:
+          - /factorio-port-fixer
+          - local
+          - --ip=0.0.0.0
+          - --port=34197
+          - --remotePort={{ .Values.service.port }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
