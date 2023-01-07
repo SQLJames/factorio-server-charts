@@ -52,7 +52,7 @@ spec:
                 fi
               fi
               if [ -f "/gamePassword/game_password" ]; then
-                jq -M --rawfile game_password /gamePassword/game_password '.game_password=(game_password|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
+                jq -M --rawfile game_password /gamePassword/game_password '.game_password=($game_password|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
               fi
               #sleep 100
               chown -vR factorio:factorio /factorio
