@@ -130,8 +130,42 @@ mods:
     - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
       name: "Squeak Through_1.8.2.zip"
 ```
-
 If the Factorio server doesn't start, check that the logs don't have an error with the mods. They are pretty verbose.
+
+### Space Exploration and other overhaul mods
+It is possible that your mod may extend the default settings. As a result, your server might not start properly and instead throw an error.
+
+While we expose all the default settings, we would not be able to determine what is needed if it is absent. To add new settings you would need to convert the desired json file into a yaml struct as we are mounting all configurations as a config map into the container.
+
+the issue with Space Exploration, as an example, was that the `autoplace_controls` by default is an empty array, and thus we were not able to start the instance as there were no settings for them to evaluate. Additionally, they are also modifying some of the other settings. These changes implement the default recommended settings, available in the UI and were stored in a file at `...Factorio\mods\space-exploration\shared.lua`. In the lua file, it has 2 sections, basic_settings and advanced_settings which correspond to settings in `map-gen-settings.json` and `map-settings.json` respecively.
+
+At the time of writing, to make these changes you would need to add this to your values.yaml file to override their default values in the chart. 
+
+> **_NOTE:_**  These settings may change and it is important to check with the mod maintainer/community to check the recommended settings.
+```
+map_settings:
+  pollution:
+    enemy_attack_pollution_consumption_modifier: 0.5
+  enemy_evolution:
+    time_factor: 0.0000005
+    destroy_factor: 0.0005
+    pollution_factor: 0.00000025
+
+map_gen_settings:
+  water: 1.5
+  starting_area: 2
+  autoplace_controls: 
+    hot:
+      size: 0.5
+    cold:
+      size: 0.5
+  property_expression_names:
+    control-setting:moisture:bias: '0.05'
+    control-setting:aux:bias: '-0.35'
+```
+More information about the debugging process for the space exploration mod can be read on [Issue 24](https://github.com/SQLJames/factorio-server-charts/issues/24).
+
+If you do run into any issues with mods, I will try to work with you on finding the right settings and document them as well.
 
 ## Parameters
 
