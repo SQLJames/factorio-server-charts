@@ -1,0 +1,151 @@
+rcon:
+  external: false
+  # passwordSecret: 'test'
+
+# nodeSelector:
+  # kubernetes.io/hostname: space-exploration # this makes it easier for firewall rules and makes sure things dont change
+  #
+resources:
+  requests:
+    cpu: 250m
+
+# making sure the game doesnt auto update on redeploy
+# https://hub.docker.com/r/factoriotools/factorio/
+image:
+  tag: stable
+
+
+persistence:
+  enabled: true
+
+factorioServer:
+  save_name: "space-exploration"
+  update_mods_on_start: true
+
+#needed if playing online
+admin_list: [ ] # put your admins based on factorio names
+# - "john_doe"
+# - "jane_doe"
+
+white_list: [ ] # put the people you want to play with you based on factorio names
+# - "john_doe"
+# - "jane_doe"
+#
+service:
+  type: NodePort
+  port: 31497
+
+  # externalIPs:
+  #  - "172.105.1.131"
+
+server_settings:
+  name: ''
+  description: ''
+  tags:
+    - modded
+    - helm
+    - experimental
+    - space-exploration
+
+  visibility:
+    public: true
+  require_user_verification: true
+  autosave_only_on_server: false
+
+account:
+  # Existing secret containing a valid factorio.com username and either a password or a token
+  # Example:
+  #
+  # apiVersion: v1
+  # kind: Secret
+  # metadata:
+  #   name: account-secret
+  # data:
+  #   username: <username in base64>
+  #   password: <password in base64>
+  #
+  # accountSecret: account-secret
+  # accountSecret: ''
+  # Your factorio.com login credentials. Required for games with visibility public
+  username: ''
+  # password: ''
+  # Authentication token. May be used instead of password above.
+  token: ''
+
+serverPassword:
+  # password required to log into the factorio server
+  game_password: ''
+  # Existing Secret containing a `game_password` data entry
+  passwordSecret: ''
+
+mods:
+  enabled: true
+  # in order to use the mods portal you will need to specify the username and token in the server_settings.
+  # name is determined by the url, it will be the last part of the url, not the title of the mod.
+  portal:
+    # https://spaceexploration.miraheze.org/wiki/Recommended_Mods#Required_Dependencies
+    # Recommended
+    - ModuleInserterSimplified
+    - aai-vehicles-ironclad
+    - grappling-gun
+    - bullet-trails
+    - equipment-gantry
+    - textplates
+    - combat-mechanics-overhaul
+    - RecipeBook
+    # QOL
+    - even-distribution
+    - AutoTrash
+    - LogisticRequestManager
+    - BottleneckLite
+    # - Squeak Through
+    - LogisticTrainNetwork
+    # spaceX
+    - alien-biomes
+    - alien-biomes-hr-terrain
+    - space-exploration-graphics
+    - space-exploration-graphics-2
+    - space-exploration-graphics-3
+    - space-exploration-graphics-4
+    - space-exploration-graphics-5
+    - space-exploration-menu-simulations
+    - shield-projector
+    - aai-containers
+    - aai-industry
+    - aai-signal-transmission
+    - simhelper
+    - space-exploration-graphics
+    - robot_attrition
+    - informatron
+    - jetpack
+    - space-exploration-postprocess 
+    - space-exploration
+  # unofficial section is meant to just allow you to download and place folders into the mods folder.
+  # we will not check version compatibility automatically with these downloads.
+  # you can encounter an error if the file names dont match what the mod is expecting for example
+  #Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod
+  # /factorio/mods/Squeak-Through.zip doesn't match the expected Squeak Through_1.8.2.zip (case sensitive!)
+  unofficial:
+    - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
+      name: "Squeak Through_1.8.2.zip"
+
+# settings required for Space ex
+map_settings:
+  pollution:
+    enemy_attack_pollution_consumption_modifier: 0.5
+  enemy_evolution:
+    time_factor: 0.0000005
+    destroy_factor: 0.0005
+    pollution_factor: 0.00000025
+
+map_gen_settings:
+  water: 1.5
+  starting_area: 2
+  autoplace_controls: 
+    hot:
+      size: 0.5
+    cold:
+      size: 0.5
+  property_expression_names:
+    control-setting:moisture:bias: '0.05'
+    control-setting:aux:bias: '-0.35'

@@ -33,6 +33,11 @@ https://github.com/helm/chart-releaser-action
 To read the full documentation check the
 chart's [README.md](https://github.com/SQLJames/factorio-server-charts/blob/main/charts/factorio-server-charts/README.md)
 
+## Examples Of Large mods
+
+Values.yaml configuration of large [mods](./examples/):
+* [Space-Exploration](https://mods.factorio.com/mod/space-exploration)
+
 ## Changelog
 
 ### V1.1.0
