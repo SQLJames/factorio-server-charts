@@ -155,8 +155,6 @@ factorioServer:
   load_latest_save: true
   # allows you to import a local savefile
   import_save_file: true
-  # the savefile name is only for helm to cp and replace its name with variable `save_name`
-  local_save_file_name: factorio_save.zip
 
 ## @param account.accountSecret Existing secret containing a valid factorio.com username and either a password or a token (or both)
 ## @param account.username Factorio.com username, ignored if `account.accountSecret` is set

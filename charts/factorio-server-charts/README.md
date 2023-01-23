@@ -167,6 +167,10 @@ More information about the debugging process for the space exploration mod can b
 
 If you do run into any issues with mods, I will try to work with you on finding the right settings and document them as well.
 
+## Loading save file
+
+Ensure that the server mods list matches the save file mods, disable the option `generate_new_save`, and ensure that `save_name` has the same name has the local save file you want to import. 
+
 ## Parameters
 
 ### Kubernetes Parameters
@@ -222,7 +226,6 @@ If you do run into any issues with mods, I will try to work with you on finding 
 | `factorioServer.update_mods_on_start`                          | Update mods on server start                                                                                                              | `false`                          |
 | `factorioServer.load_latest_save`                              | Lets the game know if you want to load the latest save                                                                                   | `true`                           |
 | `factorioServer.import_save_file`                              | Lets the game know if you want to import a local save file                                                                                   | `false`                           |
-| `factorioServer.local_save_file_name`                              | Lets the game know if you want to local save file name to import                                                                                   | `factorio_save.zip`                           |
 | `account.accountSecret`                                        | Existing secret containing a valid factorio.com username and either a password or a token (or both)                                      | `""`                             |
 | `account.username`                                             | Factorio.com username, ignored if `account.accountSecret` is set                                                                         | `""`                             |
 | `account.password`                                             | Factorio.com password, ignored if `account.accountSecret` is set                                                                         | `""`                             |
