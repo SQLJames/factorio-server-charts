@@ -102,7 +102,23 @@ spec:
             - name: account-data
               mountPath: /account
             {{- end }}
-      {{- end }}
+        {{- end }}
+        {{- if and (not .Values.factorioServer.generate_new_save) (.Values.factorioServer.import_save_file) (.Values.factorioServer.local_save_file_name) }}
+        - name: load-save-file
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy:  {{ .Values.image.pullPolicy }}
+          command:
+              - /bin/bash
+              - -ec
+              - |
+                ls -al 
+                mkdir /factorio/saves
+                echo "Copying saveFile from {{ .Values.factorioServer.local_save_file_name }} to /factorio/saves/{{ .Values.factorioServer.save_name }}.zip"
+                cp "/{{ .Values.factorioServer.local_save_file_name }}" "/factorio/saves/{{ .Values.factorioServer.save_name }}.zip"
+          volumeMounts:
+            - name: save-file
+              mountPath: {{ .Values.factorioServer.local_save_file_name }}
+        {{- end }}
       containers:
       - name: {{ template "factorio-server-charts.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -135,6 +151,10 @@ spec:
           {{- end }}
           - name: datadir
             mountPath: /factorio
+          {{- if and (not .Values.factorioServer.generate_new_save) (.Values.factorioServer.import_save_file) (.Values.factorioServer.local_save_file_name) }}
+          - name: save-file
+            mountPath: /factorio/saves/
+          {{- end }}
         env:
         - name: UPDATE_MODS_ON_START
           value: {{ .Values.factorioServer.update_mods_on_start | quote }}
@@ -155,6 +175,11 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       volumes:
+        {{- if and (not .Values.factorioServer.generate_new_save) (.Values.factorioServer.import_save_file) (.Values.factorioServer.local_save_file_name) }}
+        - name: save-file
+          emptyDir: {}
+        {{- end }}
+
         {{- if or (.Values.account.accountSecret) (.Values.account.username) }}
         - name: account-data
           secret:

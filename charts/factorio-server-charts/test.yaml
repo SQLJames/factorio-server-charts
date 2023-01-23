@@ -67,7 +67,6 @@ service:
   # type: LoadBalancer
   annotations: {}
 
-
 ## Compute Resources required by the operator container
 resources:
   ## We have to ensure that factorio have enough computing resources avaiable. We set here an absolute minimum
@@ -80,7 +79,6 @@ resources:
   # limits:
   #   memory: 1024Mi
   #   cpu: 1000m
-
 
 ## Strategy used to replace old pods
 ## IMPORTANT: use with care, it is suggested to leave as that for upgrade purposes
@@ -118,27 +116,61 @@ persistence:
   ## If you have annotations to spin up a PV i.e. the location. Remove the curly braces
   annotations: {}
 
-
 #### Factorio application configuration ####
 ## @section Factorio Parameters
 ## @param mods.enabled Enable mods
 ## @param mods.portal List of official mods to be downloaded from Factorio Mod Portal
 ## @param mods.unofficial List of unofficial mods name and url to download into the mods folder
 mods:
-  enabled: false
-# in order to use the mods portal you will need to specify the username and token in the server_settings.
-  portal: []
-#     - Krastorio2
-#     - StorageTank2_Updated
-#     - early-robots
-# unofficial section is meant to just allow you to download and place folders into the mods folder.
-# we will not check version compatibility automatically with these downloads.
-# you can encounter an error if the file names dont match what the mod is expecting for example
-# Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod
-# /factorio/mods/Squeak-Through.zip doesn't match the expected Squeak Through_1.8.2.zip (case sensitive!)
-  unofficial: []
-#     - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
-#       name: "Squeak Through_1.8.2.zip"
+  enabled: true
+  # in order to use the mods portal you will need to specify the username and token in the server_settings.
+  # name is determined by the url, it will be the last part of the url, not the title of the mod.
+  portal:
+    # https://spaceexploration.miraheze.org/wiki/Recommended_Mods#Required_Dependencies
+    # Recommended
+    - ModuleInserterSimplified
+    - aai-vehicles-ironclad
+    - grappling-gun
+    - bullet-trails
+    - equipment-gantry
+    - textplates
+    - combat-mechanics-overhaul
+    - RecipeBook
+    # QOL
+    - even-distribution
+    - AutoTrash
+    - LogisticRequestManager
+    - BottleneckLite
+    # - Squeak Through
+    - LogisticTrainNetwork
+    # spaceX
+    - alien-biomes
+    - alien-biomes-hr-terrain
+    - space-exploration-graphics
+    - space-exploration-graphics-2
+    - space-exploration-graphics-3
+    - space-exploration-graphics-4
+    - space-exploration-graphics-5
+    - space-exploration-menu-simulations
+    - shield-projector
+    - aai-containers
+    - aai-industry
+    - aai-signal-transmission
+    - simhelper
+    - space-exploration-graphics
+    - robot_attrition
+    - informatron
+    - jetpack
+    - space-exploration-postprocess
+    - space-exploration # causes crashes
+  # unofficial section is meant to just allow you to download and place folders into the mods folder.
+  # we will not check version compatibility automatically with these downloads.
+  # you can encounter an error if the file names dont match what the mod is expecting for example
+  #Error Util.cpp:83: Failed to load mod "Squeak-Through": Filename of mod
+  # /factorio/mods/Squeak-Through.zip doesn't match the expected Squeak Through_1.8.2.zip (case sensitive!)
+  unofficial:
+    - url: "https://github.com/Suprcheese/Squeak-Through/archive/refs/tags/1.8.2.zip"
+      name: "Squeak Through_1.8.2.zip"
 
 ## @param factorioServer.save_name Factorio save name
 ## @param factorioServer.generate_new_save Generate a new save if `save_name` is not found
@@ -148,7 +180,7 @@ factorioServer:
   # specify a save name
   save_name: "replaceMe"
   # Generate a New Save
-  generate_new_save: true
+  generate_new_save: false
   # Update mods on start
   update_mods_on_start: false
   # lets the game know if you want to load the latest save
@@ -156,7 +188,7 @@ factorioServer:
   # allows you to import a local savefile
   import_save_file: true
   # the savefile name is only for helm to cp and replace its name with variable `save_name`
-  local_save_file_name: factorio_save.zip
+  local_save_file_name: local-save.zip
 
 ## @param account.accountSecret Existing secret containing a valid factorio.com username and either a password or a token (or both)
 ## @param account.username Factorio.com username, ignored if `account.accountSecret` is set
@@ -175,20 +207,20 @@ account:
   #   password: <password in base64>
   #
   # accountSecret: account-secret
-  accountSecret: ''
+  accountSecret: ""
   # Your factorio.com login credentials. Required for games with visibility public
-  username: ''
-  password: ''
+  username: ""
+  password: ""
   # Authentication token. May be used instead of password above.
-  token: ''
+  token: ""
 
 ## @param serverPassword.passwordSecret Existing Secret containing a `game_password` data entry
 ## @param serverPassword.game_password Password required to log into the factorio server. Ignored if `serverPassword.passwordSecret` is set
 serverPassword:
   # password required to log into the factorio server
-  game_password: ''
+  game_password: ""
   # Existing Secret containing a `game_password` data entry
-  passwordSecret: ''
+  passwordSecret: ""
 
 ## @param server_settings.name Factorio server name
 ## @param server_settings.description Factorio server description
@@ -219,14 +251,14 @@ server_settings:
   # Your Instance Description
   description: "Factorio running on Kubernetes"
   tags:
-  - game
-  - tags
+    - game
+    - tags
   # Maximum number of players allowed, admins can join even a full server. 0 means unlimited.
   max_players: 0
   # Game visibility
   visibility:
     # Game will be published on the official Factorio matching server
-    public: false
+    public: true
     # Game will be broadcast on LAN
     lan: true
 
@@ -320,38 +352,38 @@ map_gen_settings:
   starting_area: 1
   peaceful_mode: false
   autoplace_controls: {}
-#    coal:
-#      frequency: 1
-#      size: 1
-#      richness: 1
-#    stone:
-#      frequency: 1
-#      size: 1
-#      richness: 1
-#    copper-ore:
-#      frequency: 1
-#      size: 1
-#      richness: 1
-#    iron-ore:
-#      frequency: 1
-#      size: 1
-#      richness: 1
-#    uranium-ore:
-#      frequency: 1
-#      size: 1
-#      richness: 1
-#    crude-oil:
-#      frequency: 1
-#      size: 1
-#      richness: 1
-#    trees:
-#      frequency: 1
-#      size: 1
-#      richness: 1
-#    enemy-base:
-#      frequency: 1
-#      size: 1
-#      richness: 1
+  #    coal:
+  #      frequency: 1
+  #      size: 1
+  #      richness: 1
+  #    stone:
+  #      frequency: 1
+  #      size: 1
+  #      richness: 1
+  #    copper-ore:
+  #      frequency: 1
+  #      size: 1
+  #      richness: 1
+  #    iron-ore:
+  #      frequency: 1
+  #      size: 1
+  #      richness: 1
+  #    uranium-ore:
+  #      frequency: 1
+  #      size: 1
+  #      richness: 1
+  #    crude-oil:
+  #      frequency: 1
+  #      size: 1
+  #      richness: 1
+  #    trees:
+  #      frequency: 1
+  #      size: 1
+  #      richness: 1
+  #    enemy-base:
+  #      frequency: 1
+  #      size: 1
+  #      richness: 1
   cliff_settings:
     # Name of the cliff prototype
     name: cliff
@@ -372,13 +404,13 @@ map_gen_settings:
   # "control-setting:aux:frequency:multiplier is the inverse of the terrain type scale in the map generator GUI."
   # "control-setting:aux:bias is the teraain type bias in the map generator GUI."
   property_expression_names:
-    control-setting:moisture:frequency:multiplier: '1'
-    control-setting:moisture:bias: '0'
-    control-setting:aux:frequency:multiplier: '1'
-    control-setting:aux:bias: '0'
+    control-setting:moisture:frequency:multiplier: "1"
+    control-setting:moisture:bias: "0"
+    control-setting:aux:frequency:multiplier: "1"
+    control-setting:aux:bias: "0"
   starting_points:
-  - "x": 0
-    "y": 0
+    - "x": 0
+      "y": 0
   # Use null for a random seed, number for a specific seed.
   seed: null
 
@@ -497,27 +529,30 @@ map_settings:
     min_steps_to_check_path_find_termination: 2000
     start_to_goal_cost_multiplier_to_terminate_path_find: 500
     overload_levels:
-    - 0
-    - 100
-    - 500
+      - 0
+      - 100
+      - 500
     overload_multipliers:
-    - 2
-    - 3
-    - 4
+      - 2
+      - 3
+      - 4
     negative_path_cache_delay_interval: 20
   max_failed_behavior_count: 3
 
 ## @param admin_list Admin list
 ## @param white_list Whitelist
 ## @param ban_list Ban list
-admin_list: []
+admin_list:
+  []
   # - "john_doe"
   # - "jane_doe"
 
-white_list: []
+white_list:
+  []
   # - "john_doe"
   # - "jane_doe"
 
-ban_list: []
+ban_list:
+  []
   # - "john_doe"
   # - "jane_doe"

@@ -1,5 +1,10 @@
 ## Changelog
 
+### V1.2.1
+
+- Added ability to import a local factorio `save_file`. Supports modded and vanilla. 
+- Added `.yamllint` for common linting behavior.
+
 ### V1.2.0
 
 #### Non-Breaking Changes
