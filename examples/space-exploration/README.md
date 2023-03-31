@@ -19,6 +19,7 @@ mods:
     - equipment-gantry
     - textplates
     - combat-mechanics-overhaul
+    - flib
     - RecipeBook
     # QOL
     - even-distribution
