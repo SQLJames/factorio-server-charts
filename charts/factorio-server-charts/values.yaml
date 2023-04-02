@@ -65,6 +65,7 @@ service:
   #   port: 34197
   ## LoadBalancer setup
   # type: LoadBalancer
+  # externalTrafficPolicy: Cluster
   annotations: {}
 
 
