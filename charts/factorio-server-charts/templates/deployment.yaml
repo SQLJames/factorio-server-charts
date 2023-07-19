@@ -112,6 +112,7 @@ spec:
             - -ec
             - |
               mkdir -p /factorio/save_to_import
+              mkdir -p /factorio/saves
               bash /scripts/save-importer.sh
           {{- with .Values.securityContext }}
           securityContext:
@@ -212,6 +213,9 @@ spec:
         - name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
           configMap:
             name: {{ template "factorio-server-charts.fullname" . }}-serversettingsconfig
-        - name: {{ template "factorio-server-charts.fullname" . }}-scripts-configmap
+        - name: {{ template "factorio-server-charts.fullname" . }}-mod-downloader-configmap
           configMap:
-            name: {{ template "factorio-server-charts.fullname" . }}-scripts-configmap
+            name: {{ template "factorio-server-charts.fullname" . }}-mod-downloader-configmap
+        - name: {{ template "factorio-server-charts.fullname" . }}-save-importer-configmap
+          configMap:
+            name: {{ template "factorio-server-charts.fullname" . }}-save-importer-configmap
