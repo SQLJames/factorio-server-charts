@@ -47,10 +47,9 @@ data:
     elif [ "$count" -eq 0 ]; then
         echo "$message_prefix No save file found in '$source_dir'"
         echo "$message_prefix Skipping save import process."
-    fi
     else
-        echo "$message_prefix Multiple save file found in '$source_dir'"
-        echo "$message_prefix Not sure what to do here. Put only one factorio save zip file in '$source_dir' to enable the import process."
+        echo "$message_prefix Multiple save files found in '$source_dir'"
+        echo "$message_prefix Put only one factorio save zip file in '$source_dir' to enable the import process."
         echo "$message_prefix Skipping save import process."
     fi
 
