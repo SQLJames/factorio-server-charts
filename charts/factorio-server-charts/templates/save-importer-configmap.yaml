@@ -9,7 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   save-importer.sh: |
-    message_prefix="save-importer.sh:"
+    message_prefix="save-importer: "
     source_dir="/factorio/save_to_import"
     target_dir="/factorio/saves"
     target_filename="{{ .Values.factorioServer.save_name }}.zip"
@@ -44,8 +44,13 @@ data:
             echo "$message_prefix Error copying the file."
             exit 1
         fi
+    elif [ "$count" -eq 0 ]; then
+        echo "$message_prefix No save file found in '$source_dir'"
+        echo "$message_prefix Skipping save import process."
+    fi
     else
-        echo "$message_prefix No save file found in '$source_dir' or multiple save files found."
+        echo "$message_prefix Multiple save file found in '$source_dir'"
+        echo "$message_prefix Not sure what to do here. Put only one factorio save zip file in '$source_dir' to enable the import process."
         echo "$message_prefix Skipping save import process."
     fi
 

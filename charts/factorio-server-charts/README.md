@@ -106,6 +106,20 @@ serverPassword:
   # Existing Secret containing a `game_password` data entry
   passwordSecret: ''
 ```
+## Importing a save file
+
+> :warning: Importing a save file will **DESTROY THE SERVER SAVEFILE** with the name specified in `factorioServer.save_name`. Import with caution!
+
+To import an existing save file, start/restart the pod at least once. This will create the factorio folder structure. 
+
+Now, copy your existing savegame to the `/factorio/save_to_import/<existing_savegame_name>.zip` on the running pod using whatever mechanism you prefer. To do this with kubectl:
+
+```bash
+kubectl cp ./my_existing_savegame.zip <namespace>/<pod_name>:/factorio/save_to_import
+```
+
+Restart the pod again to import your save file.
+
 
 ## Installing mods
 
@@ -221,6 +235,7 @@ If you do run into any issues with mods, I will try to work with you on finding 
 | `factorioServer.generate_new_save`                             | Generate a new save if `save_name` is not found                                                                                          | `true`                           |
 | `factorioServer.update_mods_on_start`                          | Update mods on server start                                                                                                              | `false`                          |
 | `factorioServer.load_latest_save`                              | Lets the game know if you want to load the latest save                                                                                   | `true`                           |
+| `factorioServer.import_save`                                   | Import an existing save file from '/factorio/save_to_import'. **:warning: Overwrites existing save**                                     | `true`                           |
 | `account.accountSecret`                                        | Existing secret containing a valid factorio.com username and either a password or a token (or both)                                      | `""`                             |
 | `account.username`                                             | Factorio.com username, ignored if `account.accountSecret` is set                                                                         | `""`                             |
 | `account.password`                                             | Factorio.com password, ignored if `account.accountSecret` is set                                                                         | `""`                             |
