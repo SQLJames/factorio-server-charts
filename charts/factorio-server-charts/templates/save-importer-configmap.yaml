@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "factorio-server-charts.fullname" . }}-save-importer-configmap
+  labels:
+    app: {{ template "factorio-server-charts.fullname" . }}
+    chart: {{ template "factorio-server-charts.fullname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  save-importer.sh: |
+    message_prefix="save-importer.sh:"
+    source_dir="/factorio/save_to_import"
+    target_dir="/factorio/saves"
+    target_filename="{{ .Values.factorioServer.save_name }}.zip"
+
+
+    # Check if the source dir exists
+    if [ ! -d "$source_dir" ]; then
+        mkdir -p "$source_dir"
+    fi
+
+    # Count the number of save files in the source dir
+    # luckily the factorio docker image incldues find
+    count=$(find "$source_dir" -maxdepth 1 -type f -name "*.zip" | wc -l)
+
+    if [ "$count" -eq 1 ]; then
+        save_file=$(find "$source_dir" -maxdepth 1 -type f -name "*.zip")
+        echo "$message_prefix Found save file to import - '$save_file'."
+        echo "$message_prefix Starting save import process."
+        # Copy and rename the file
+        cp -f "$save_file" "$target_dir/$target_filename"
+        if [ $? -eq 0 ]; then
+            # Copy was successful
+            echo "$message_prefix File copied to '$target_dir/$target_filename'."
+            
+            # Touch the new copy to be _certain_ it's the latest file
+            touch "$target_dir/$target_filename"
+            
+            # Delete the original file, so we don't reimport it again
+            rm "$save_file"
+            echo "$message_prefix Original file '$save_file' deleted."
+        else
+            echo "$message_prefix Error copying the file."
+            exit 1
+        fi
+    else
+        echo "$message_prefix No save file found in '$source_dir' or multiple save files found."
+        echo "$message_prefix Skipping save import process."
+    fi
+
+
+
+
+
