@@ -103,7 +103,7 @@ spec:
               mountPath: /account
             {{- end }}
         {{- end }}
-        {{- if .Values.factorioServer.import_save }}
+        {{- if .Values.import_save.enabled }}
         - name: import-factorio-save
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy:  {{ .Values.image.pullPolicy }}
@@ -111,8 +111,6 @@ spec:
             - /bin/bash
             - -ec
             - |
-              mkdir -p /factorio/save_to_import
-              mkdir -p /factorio/saves
               bash /scripts/save-importer.sh
           {{- with .Values.securityContext }}
           securityContext:
