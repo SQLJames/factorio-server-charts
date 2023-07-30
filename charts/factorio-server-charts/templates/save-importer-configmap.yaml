@@ -1,0 +1,207 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "factorio-server-charts.fullname" . }}-save-importer-configmap
+  labels:
+    app: {{ template "factorio-server-charts.fullname" . }}
+    chart: {{ template "factorio-server-charts.fullname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  save-importer.sh: |
+    #directory where file at $source_url will be downloaded to
+    download_dir="/factorio/save-importer/download" 
+
+    #directory where files from $source_url that meet staging criteria will be downloaded to
+    #OR where files can be manually placed for import regardless of criteria.
+    staging_dir="/factorio/save-importer/import" 
+
+    #file used to record checksums and urls of previously downloaded files
+    import_data="/factorio/save-importer/import_data.txt"
+
+    target_dir="/factorio/saves"
+    app_name="factorio"
+    file_extension=".zip" #note, this is used both for searching the staging_dir and displaying messages to the user
+    file_type="save"
+
+    #config read from values.yaml
+    target_filename="{{ .Values.factorioServer.save_name }}.zip" #name for the downloaded file
+    source_url="{{ .Values.import_save.source_url }}"
+    reimport_on_file_change={{ .Values.import_save.reimport_on_change | int }}
+    reimport_every_time={{ .Values.import_save.reimport_every_time | int }}
+
+
+    main() {
+    echo "starting $file_type import process"
+
+    build_import_structure
+
+    if [ "${#source_url}" -gt 0 ]; then
+        echo "source_url $source_url provided. checking..."
+        download_file
+        stage_downloaded_file
+    else
+        echo "no download url specified. checking $staging_dir for manually staged files..."
+    fi
+
+    import_file
+    }
+
+    get_sha256sum() {
+    sha256sum "$1" | awk '{ print $1 }'
+    }
+
+    get_previous_sha256sum() {
+    echo $(grep "^${source_url}::" "$import_data" | awk -F '::' '{print $NF}')
+    }
+
+    build_import_structure() {
+    # staging_dir
+    if [ ! -d "$staging_dir" ]; then
+        mkdir -p "$staging_dir"
+    fi
+
+    # download_dir
+    if [ ! -d "$download_dir" ]; then
+        mkdir -p "$download_dir"
+    fi
+
+    # target_dir
+    if [ ! -d "$target_dir" ]; then
+        mkdir -p "$target_dir"
+    fi
+
+    # data file
+    if [ ! -f "$import_data" ]; then
+        touch "$import_data"
+    fi
+    }
+
+    download_file() {
+    do_download=0
+    if [ "$reimport_every_time" -eq 1 ]; then
+        do_download=1
+        echo "reimport_every_time is set to true."
+    else
+        echo "reimport_every_time is set to false."
+    fi
+
+    if  [ "$reimport_on_file_change" -eq 1 ]; then
+        do_download=1
+        echo "reimport_on_file_change is set to true."
+    else
+        echo "reimport_on_file_change is set to false."
+    fi
+
+    if ! grep -q "$source_url" "$import_data"; then
+        do_download=1
+        echo "source '$source_url' not previously downloaded."
+    else
+        echo "source '$source_url' previously downloaded."
+    fi
+    
+    if [ "$do_download" -eq 1 ]; then
+        echo "downloading '$source_url'..."
+        if curl -L -o "$download_dir/$target_filename" "$source_url"; then
+        echo "$file_type file downloaded from '$source_url' and renamed '$target_filename'"
+        else
+        echo "unable to download $file_type file from '$source_url'. skipping import process."
+        exit 0
+        fi
+    else 
+        echo "conditions not met to download file."
+    fi
+    }
+
+
+
+    write_sha256sum () {
+    echo "writing checksum of '$source_url' download to '$import_data' file for future runs of the import script."
+    if grep -q "^${source_url}::" "$import_data"; then
+        # Update the checksum if the file entry already exists (escape any ampersands!)
+        sed -i "s~^${source_url}::.*~${source_url//&/\\&}::${checksum}~" "$import_data"
+    else
+        # Append the new entry to the checksum file if it doesn't exist
+        echo "${source_url}::${checksum}" >> "$import_data"
+    fi
+    }
+
+
+    stage_downloaded_file(){
+    stage_file=0
+    if [ -e "$download_dir/$target_filename" ]; then
+        #get checksum of file, and any previous checksums that might exist for this source url
+        checksum=$(get_sha256sum "$download_dir/$target_filename")
+        previous_checksum=$(get_previous_sha256sum "$source_url")
+        echo "previous checksum: $previous_checksum"
+
+        if [ "$reimport_every_time" -eq 1 ]; then
+        stage_file=1
+        echo "reimport_every_time flag is set. file will be staged for import"
+        fi
+
+        if [ -z "$previous_checksum" ]; then
+        stage_file=1
+        echo "no record found of a previous download for this file. file will be staged for import."
+        fi
+
+        if [ "$checksum" != "$previous_checksum" -a "$reimport_on_file_change" ]; then
+        echo "file from '$source_url' has changed since we last downloaded it..."
+        if [ "$reimport_on_file_change" -eq 1 ]; then
+            stage_file=1
+            echo "...and 'reimport_on_file_change' is enabled. file will be staged for import"
+        else
+            echo "...but 'reimport_on_file_change' is disabled. file will NOT be staged for import"
+        fi
+        else
+        echo "file from '$source_url' has NOT changed since we last downloaded it..."
+        fi
+
+        if [ "$stage_file" -eq 1 ]; then
+        echo "file downloaded from $source_url meets conditions for import. Moving to $staging_dir to prepare for $file_type import."
+        write_sha256sum
+        mv -f "$download_dir/$target_filename" "$staging_dir"
+        else
+        echo "file downloaded from $source_url does not meet conditions for import. Deleting the downloaded file."
+        rm -f "$download_dir/$target_filename"
+        fi
+    else
+        echo "target file not found in download directory. checking $staging_dir for manually staged files."
+    fi
+    }
+
+    import_file() {
+    # Count the number of files with the $file_extension in the source dir
+    count=$(find "$staging_dir" -maxdepth 1 -type f -name "*$file_extension" | wc -l)
+
+    if [ "$count" -eq 1 ]; then
+        file_to_import=$(find "$staging_dir" -maxdepth 1 -type f -name "*$file_extension")
+        echo "Found $file_type file to import - '$file_to_import'."
+        echo "Copying '$file_to_import' to '$target_dir/$target_filename'. This will replace any previously existing file at this destination."
+        # Copy and rename the file
+        cp -f "$file_to_import" "$target_dir/$target_filename"
+        if [ $? -eq 0 ]; then
+        # Copy was successful
+        echo "File copied to '$target_dir/$target_filename'."
+        
+        # Touch the new copy to be _certain_ it's the latest file
+        touch "$target_dir/$target_filename"
+        
+        # Delete the original file, so we don't reimport it again
+        rm "$file_to_import"
+        echo "staging file '$file_to_import' deleted."
+        else
+        echo "Error copying the file."
+        exit 1
+        fi
+    elif [ "$count" -eq 0 ]; then
+        echo "No $file_type file found in '$staging_dir'"
+        echo "Skipping $file_type import process."
+    else
+        echo "Multiple $file_type files found in '$staging_dir'"
+        echo "Put only one $app_name $file_type $file_extension file in '$staging_dir' to enable the import process."
+        echo "Skipping $file_type import process."
+    fi
+    }
+
+    main

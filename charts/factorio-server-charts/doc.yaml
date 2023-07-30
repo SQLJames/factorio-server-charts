@@ -9,7 +9,7 @@ repository:
   name: github
 chart:
   name: factorio-server-charts
-  version: 1.0.3
+  version: 1.2.4
   values: "-- generate from values file --"
   valuesExample: "-- generate from values file --"
 release:
