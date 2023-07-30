@@ -154,16 +154,15 @@ factorioServer:
   # lets the game know if you want to load the latest save
   load_latest_save: true
 
-
 import_save:
-  #enable save importer
+  # enable save importer
   enabled: true
-  #url to download save from (http or https only).
-  #if no url is specified, saves can still be manually imported by placing the file in "/factorio/save-importer/import"
+  # url to download save from (http or https only).
+  # if no url is specified, saves can still be manually imported by placing the file in "/factorio/save-importer/import"
   source_url: ""
-  #reimport from the source_url if the checksum of the file changes
+  # reimport from the source_url if the checksum of the file changes
   reimport_on_change: false
-  #reimport from the source_url AND OVERWRITE PREVIOUS SAVE every time pod is initialized. good for demos or testing
+  # reimport from the source_url AND OVERWRITE PREVIOUS SAVE every time pod is initialized. good for demos or testing
   reimport_every_time: false
 
 ## @param account.accountSecret Existing secret containing a valid factorio.com username and either a password or a token (or both)
