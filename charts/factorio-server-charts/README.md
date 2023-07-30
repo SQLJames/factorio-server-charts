@@ -192,13 +192,14 @@ If you do run into any issues with mods, I will try to work with you on finding 
 
 ### Service Parameters
 
-| Name                  | Description                                                                                                                | Value      |
-|-----------------------|----------------------------------------------------------------------------------------------------------------------------|------------|
-| `service.type`        | Factorio service type                                                                                                      | `NodePort` |
-| `service.port`        | Factorio service port                                                                                                      | `31497`    |
-| `service.externalIPs` | If you are able to map an external IP, set it here                                                                         |            |
-| `service.nodePort`    | If you use "type: NodePort" set the port to a value you like in the range of 30000-32767. Leave it blank for a random port |            |
-| `service.annotations` | Additional custom annotations for Factorio service                                                                         | `{}`       |
+| Name                            | Description                                                                                                                | Value      |
+|---------------------------------|----------------------------------------------------------------------------------------------------------------------------|------------|
+| `service.type`                  | Factorio service type                                                                                                      | `NodePort` |
+| `service.port`                  | Factorio service port                                                                                                      | `31497`    |
+| `service.externalIPs`           | If you are able to map an external IP, set it here                                                                         |            |
+| `service.nodePort`              | If you use "type: NodePort" set the port to a value you like in the range of 30000-32767. Leave it blank for a random port |            |
+| `service.annotations`           | Additional custom annotations for Factorio service                                                                         | `{}`       |
+| `service.externalTrafficPolicy` | Traffic policy, "Cluster" or "Local", used for the service                                                                 | `Cluster`  |
 
 ### Persistence Configuration
 
