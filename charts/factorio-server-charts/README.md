@@ -108,14 +108,26 @@ serverPassword:
 ```
 ## Importing a save file
 
-> :warning: Importing a save file will **DESTROY THE SERVER SAVEFILE** with the name specified in `factorioServer.save_name`. Import with caution!
+> :warning: Importing a save file will **OVERWRITE THE SERVER SAVEFILE** with the name specified in `factorioServer.save_name`. Import with caution!
 
-To import an existing save file, start/restart the pod at least once. This will create the factorio folder structure. 
+### Importing by URL
 
-Now, copy your existing savegame to the `/factorio/save_to_import/<existing_savegame_name>.zip` on the running pod using whatever mechanism you prefer. To do this with kubectl:
+To import your save file from a URL, set `import_save.source_url` to a direct-download link for your savegame. By default, the file will be downloaded and imported only once.
+
+If, on pod intialization, you wish to re-import the file every time the contents of the savegame change, set `import_save.reimport_on_change` to `true`. 
+:warning: If the savegame at the source url changes, this will overwrite the server save with that file. Use with caution!
+
+If you wish to reimport the save file every time the pod reinitializes, regardless of changes, set `import_save.reimport_every_time` to `true`. This could be useful for demos or testing.
+:warning: This will overwrite the server savegame **every time the pod reinitializes**. Use with caution!
+
+### Manual Import
+
+To import an existing save file, start/restart the pod at least once. This will create the import folder structure.
+
+Now, copy the savegame you wish to import to the `/factorio/save-importer/import/<existing_savegame_name>.zip` on the running pod using whatever mechanism you prefer. To do this with kubectl:
 
 ```bash
-kubectl cp ./my_existing_savegame.zip <namespace>/<pod_name>:/factorio/save_to_import
+kubectl cp ./my_existing_savegame.zip <namespace>/<pod_name>:/factorio/save-importer/import
 ```
 
 Restart the pod again to import your save file.
