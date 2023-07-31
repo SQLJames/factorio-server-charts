@@ -280,6 +280,7 @@ server_settings:
 
 ## @param rcon.external Enable RCON external access (deploy RCON service)
 ## @param rcon.type RCON service type
+## @param rcon.serviceAnnotations RCON service annotations
 ## @param rcon.passwordSecret Existing secret containing a `password` data field
 ## @param rcon.password Password for RCON, ignored if `rcon.passwordSecret` is set
 ## @param rcon.port RCON service external port
@@ -287,7 +288,7 @@ server_settings:
 rcon:
   external: true
   type: LoadBalancer
-
+  serviceAnnotations: {}
   # Existing secret containing a `password` data field
   passwordSecret: ""
 
