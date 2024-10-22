@@ -305,8 +305,6 @@ rcon:
   # rcon port
   port: 30100
 
-## @param map_gen_settings.terrain_segmentation The inverse of water scale in the map generator GUI
-## @param map_gen_settings.water The equivalent to water coverage in the map generator GUI
 ## @param map_gen_settings.width Map width in tiles; 0 means infinite
 ## @param map_gen_settings.height Map height in tiles; 0 means infinite
 ## @param map_gen_settings.starting_area Multiplier for biter free zone radius
@@ -322,12 +320,6 @@ rcon:
 ## @extra map_gen_settings.starting_points [array] List of starting points for the map
 ## @param map_gen_settings.seed Map RNG Seed
 map_gen_settings:
-  # The inverse of water scale in the map generator GUI.
-  terrain_segmentation: 1
-  #  The equivalent to water coverage in the map generator GUI. Higher coverage means
-  #  more water in larger oceans.
-  #  Water level = 10 * log2(this value)
-  water: 1
   # Width and height of map, in tiles; 0 means infinite
   width: 0
   # Width and height of map, in tiles; 0 means infinite
@@ -336,6 +328,9 @@ map_gen_settings:
   starting_area: 1
   peaceful_mode: false
   autoplace_controls: {}
+#    water:
+#      frequency: 1
+#      size: 1
 #    coal:
 #      frequency: 1
 #      size: 1
@@ -363,11 +358,9 @@ map_gen_settings:
 #    trees:
 #      frequency: 1
 #      size: 1
-#      richness: 1
 #    enemy-base:
 #      frequency: 1
 #      size: 1
-#      richness: 1
   cliff_settings:
     # Name of the cliff prototype
     name: cliff
@@ -380,18 +373,17 @@ map_gen_settings:
     richness: 1
   # Overrides for property value generators (map type)
   # Leave elevation blank to get normal terrain.
-  # Use ''elevation'': ''0_16-elevation'' to reproduce terrain from 0.16.
-  # Use ''elevation'': ''0_17-island'' to get an island.
+  # Use 'elevation': 'elevation_island' to get an island.
   # Moisture and terrain type are also controlled via this.
-  # "control-setting:moisture:frequency:multiplier is the inverse of the moisture scale in the map generator GUI."
-  # "control-setting:moisture:bias is the moisture bias in the map generator GUI."
-  # "control-setting:aux:frequency:multiplier is the inverse of the terrain type scale in the map generator GUI."
-  # "control-setting:aux:bias is the teraain type bias in the map generator GUI."
+  # "control:moisture:frequency is the inverse of the moisture scale in the map generator GUI."
+  # "control:moisture:bias is the moisture bias in the map generator GUI."
+  # "control:aux:frequency is the inverse of the terrain type scale in the map generator GUI."
+  # "control:aux:bias is the teraain type bias in the map generator GUI."
   property_expression_names:
-    control-setting:moisture:frequency:multiplier: '1'
-    control-setting:moisture:bias: '0'
-    control-setting:aux:frequency:multiplier: '1'
-    control-setting:aux:bias: '0'
+    control:moisture:frequency: '1'
+    control:moisture:bias: '0'
+    control:aux:frequency: '1'
+    control:aux:bias: '0'
   starting_points:
   - "x": 0
     "y": 0
