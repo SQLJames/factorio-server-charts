@@ -214,9 +214,11 @@ serverPassword:
 ## @param server_settings.autosave_slots Server autosave slots, it is cycled through when the server autosaves
 ## @param server_settings.afk_autokick_interval How many minutes must pass before someone is kicked when doing nothing, 0 for never
 ## @param server_settings.auto_pause Whether the server should be paused when no players are present
+## @param server_settings.auto_pause_when_players_connect Whether should the server be paused when someone is connecting to the server. 
 ## @param server_settings.only_admins_can_pause_the_game Specifies if anyone can pause or only admins
 ## @param server_settings.autosave_only_on_server Whether autosaves should be performed only on the server or also on all connected clients. Default is true
 ## @param server_settings.non_blocking_saving Highly experimental feature, enable only at your own risk
+## @param server_settings.max_heartbeats_per_second Network tick rate. Maximum rate game updates packets are sent at before bundling them together. Minimum value is 6, maximum value is 240.
 ## @param server_settings.minimum_segment_size Minimum network messages segment size
 ## @param server_settings.minimum_segment_size_peer_count Minimum network messages segment count
 ## @param server_settings.maximum_segment_size Maximum network messages segment size
@@ -258,6 +260,8 @@ server_settings:
   afk_autokick_interval: 0
   # Whether should the server be paused when no players are present.
   auto_pause: true
+  # Whether should the server be paused when someone is connecting to the server.
+  auto_pause_when_players_connect: false
   # specifies if anyone can pause or only admins
   only_admins_can_pause_the_game: true
   # Whether autosaves should be saved only on server or also on all connected clients. Default is true.
@@ -267,6 +271,9 @@ server_settings:
   #  autosave. Autosaving on connected Windows clients will be disabled regardless of
   #  autosave_only_on_server option.
   non_blocking_saving: false
+  # Network tick rate. Maximum rate game updates packets are sent at before bundling them together.
+  # Minimum value is 6, maximum value is 240.
+  max_heartbeats_per_second: 60
   #  Long network messages are split into segments that are sent
   #  over multiple ticks. Their size depends on the number of peers currently connected.
   #  Increasing the segment size will increase upload bandwidth requirement for the server
