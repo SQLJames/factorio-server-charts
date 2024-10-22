@@ -514,6 +514,9 @@ map_settings:
     - 3
     - 4
     negative_path_cache_delay_interval: 20
+  asteroids:
+    spawning_rate: 1
+    max_ray_portals_expanded_per_tick: 100
   max_failed_behavior_count: 3
 
 ## @param admin_list Admin list
