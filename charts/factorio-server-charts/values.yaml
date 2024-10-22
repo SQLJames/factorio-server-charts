@@ -146,14 +146,16 @@ mods:
 ## @param factorioServer.update_mods_on_start Update mods on server start
 ## @param factorioServer.load_latest_save Lets the game know if you want to load the latest save
 factorioServer:
-  # specify a save name
+  # name to use for the save file
   save_name: "replaceMe"
-  # Generate a New Save
+  # generate a new save if one does not exist before starting the server
   generate_new_save: true
-  # Update mods on start
+  # if mods should be updated before starting the server
   update_mods_on_start: false
-  # lets the game know if you want to load the latest save
+  # load latest when true. Otherwise load SAVE_NAME
   load_latest_save: true
+  # enables or disables the mods for DLC Space Age in mod-list.json
+  enable_space_age: true
 
 import_save:
   # enable save importer
