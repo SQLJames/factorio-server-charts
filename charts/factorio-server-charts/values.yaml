@@ -390,10 +390,10 @@ map_gen_settings:
   # Use null for a random seed, number for a specific seed.
   seed: null
 
-## @param map_settings.difficulty_settings.recipe_difficulty Enable expensive crafting recipe
-## @param map_settings.difficulty_settings.technology_difficulty Enable expensive research
 ## @param map_settings.difficulty_settings.technology_price_multiplier Research cost multiplier
-## @param map_settings.difficulty_settings.research_queue_setting Possibile values: `after-victory`, `always`, `never`
+## @param map_settings.difficulty_settings.spoil_time_modifier
+## @param map_settings.asteroids.spawning_rate Asteroid Spawing rate
+## @param map_settings.asteroids.max_ray_portals_expanded_per_tick
 ## @skip map_settings.pollution
 ## @extra map_settings.pollution.enabled Enable pollution. Check values.yaml to know what pollution values you can override
 ## @skip map_settings.enemy_evolution
@@ -409,10 +409,11 @@ map_gen_settings:
 ## @param map_settings.max_failed_behavior_count If a behavior fails this many times, the enemy (or enemy group) is destroyed. This solves biters stuck within their own base.
 map_settings:
   difficulty_settings:
-    recipe_difficulty: 0
-    technology_difficulty: 0
     technology_price_multiplier: 1
-    research_queue_setting: after-victory
+    spoil_time_modifier: 1
+  asteroids:
+    max_ray_portals_expanded_per_tick: 100
+    spawning_rate: 1
   pollution:
     enabled: true
     # these are values for 60 ticks (1 simulated second)
@@ -435,7 +436,6 @@ map_settings:
     pollution_factor: 0.0000009
   enemy_expansion:
     enabled: true
-    min_base_spacing: 3
     max_expansion_distance: 7
     friendly_base_influence_radius: 2
     enemy_building_influence_radius: 2
@@ -476,7 +476,7 @@ map_settings:
   path_finder:
     fwd2bwd_ratio: 5
     goal_pressure_ratio: 2
-    max_steps_worked_per_tick: 100
+    max_steps_worked_per_tick: 1000
     max_work_done_per_tick: 8000
     use_path_cache: true
     short_cache_size: 5
@@ -503,7 +503,7 @@ map_settings:
     short_request_max_steps: 1000
     short_request_ratio: 0.5
     min_steps_to_check_path_find_termination: 2000
-    start_to_goal_cost_multiplier_to_terminate_path_find: 500
+    start_to_goal_cost_multiplier_to_terminate_path_find: 2000.0
     overload_levels:
     - 0
     - 100
