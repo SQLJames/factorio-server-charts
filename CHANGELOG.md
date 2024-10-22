@@ -1,5 +1,16 @@
 ## Changelog
 
+### V2.0.0
+
+#### Breaking Changes
+
+Now compatible only with Factorio V2.0.
+The Space Age DLC is not required to use this Helm chart.
+Some Factorio settings in general have changed.
+To continue using older 'factoriotools/factorio' Docker images, use version V1.2.5.
+
+- Updated fields in values.yaml for Factorio V2.0 and Space Age DLC.
+
 ### V1.2.0
 
 #### Non-Breaking Changes
