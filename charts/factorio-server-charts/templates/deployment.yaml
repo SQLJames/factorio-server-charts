@@ -167,6 +167,8 @@ spec:
           value: {{ .Values.factorioServer.generate_new_save | quote }}
         - name: LOAD_LATEST_SAVE
           value: {{ .Values.factorioServer.load_latest_save | quote }}
+        - name: DLC_SPACE_AGE
+          value: {{ .Values.factorioServer.enable_space_age | quote }}
         - name: CONFIG
           value: /factorio/configs
 {{- if .Values.nodeSelector }}

@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.0.1
+
+#### Non-Breaking Changes
+
+- Added `enable_space_age` field to values.yaml to enable or disable Space Age DLC
+
 ### V2.0.0
 
 #### Breaking Changes
