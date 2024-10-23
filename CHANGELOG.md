@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.0.2
+
+#### Non-Breaking Changes
+
+- Updated version of the factorio badge to 2.0.9
+
 ### V2.0.1
 
 #### Non-Breaking Changes
