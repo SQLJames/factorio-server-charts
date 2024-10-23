@@ -214,9 +214,11 @@ serverPassword:
 ## @param server_settings.autosave_slots Server autosave slots, it is cycled through when the server autosaves
 ## @param server_settings.afk_autokick_interval How many minutes must pass before someone is kicked when doing nothing, 0 for never
 ## @param server_settings.auto_pause Whether the server should be paused when no players are present
+## @param server_settings.auto_pause_when_players_connect Whether should the server be paused when someone is connecting to the server.
 ## @param server_settings.only_admins_can_pause_the_game Specifies if anyone can pause or only admins
 ## @param server_settings.autosave_only_on_server Whether autosaves should be performed only on the server or also on all connected clients. Default is true
 ## @param server_settings.non_blocking_saving Highly experimental feature, enable only at your own risk
+## @param server_settings.max_heartbeats_per_second Network tick rate. Maximum rate game updates packets are sent at before bundling them together. Minimum value is 6, maximum value is 240.
 ## @param server_settings.minimum_segment_size Minimum network messages segment size
 ## @param server_settings.minimum_segment_size_peer_count Minimum network messages segment count
 ## @param server_settings.maximum_segment_size Maximum network messages segment size
@@ -258,6 +260,8 @@ server_settings:
   afk_autokick_interval: 0
   # Whether should the server be paused when no players are present.
   auto_pause: true
+  # Whether should the server be paused when someone is connecting to the server.
+  auto_pause_when_players_connect: false
   # specifies if anyone can pause or only admins
   only_admins_can_pause_the_game: true
   # Whether autosaves should be saved only on server or also on all connected clients. Default is true.
@@ -267,6 +271,9 @@ server_settings:
   #  autosave. Autosaving on connected Windows clients will be disabled regardless of
   #  autosave_only_on_server option.
   non_blocking_saving: false
+  # Network tick rate. Maximum rate game updates packets are sent at before bundling them together.
+  # Minimum value is 6, maximum value is 240.
+  max_heartbeats_per_second: 60
   #  Long network messages are split into segments that are sent
   #  over multiple ticks. Their size depends on the number of peers currently connected.
   #  Increasing the segment size will increase upload bandwidth requirement for the server
@@ -298,8 +305,6 @@ rcon:
   # rcon port
   port: 30100
 
-## @param map_gen_settings.terrain_segmentation The inverse of water scale in the map generator GUI
-## @param map_gen_settings.water The equivalent to water coverage in the map generator GUI
 ## @param map_gen_settings.width Map width in tiles; 0 means infinite
 ## @param map_gen_settings.height Map height in tiles; 0 means infinite
 ## @param map_gen_settings.starting_area Multiplier for biter free zone radius
@@ -315,12 +320,6 @@ rcon:
 ## @extra map_gen_settings.starting_points [array] List of starting points for the map
 ## @param map_gen_settings.seed Map RNG Seed
 map_gen_settings:
-  # The inverse of water scale in the map generator GUI.
-  terrain_segmentation: 1
-  #  The equivalent to water coverage in the map generator GUI. Higher coverage means
-  #  more water in larger oceans.
-  #  Water level = 10 * log2(this value)
-  water: 1
   # Width and height of map, in tiles; 0 means infinite
   width: 0
   # Width and height of map, in tiles; 0 means infinite
@@ -329,6 +328,9 @@ map_gen_settings:
   starting_area: 1
   peaceful_mode: false
   autoplace_controls: {}
+#    water:
+#      frequency: 1
+#      size: 1
 #    coal:
 #      frequency: 1
 #      size: 1
@@ -356,11 +358,9 @@ map_gen_settings:
 #    trees:
 #      frequency: 1
 #      size: 1
-#      richness: 1
 #    enemy-base:
 #      frequency: 1
 #      size: 1
-#      richness: 1
   cliff_settings:
     # Name of the cliff prototype
     name: cliff
@@ -373,28 +373,27 @@ map_gen_settings:
     richness: 1
   # Overrides for property value generators (map type)
   # Leave elevation blank to get normal terrain.
-  # Use ''elevation'': ''0_16-elevation'' to reproduce terrain from 0.16.
-  # Use ''elevation'': ''0_17-island'' to get an island.
+  # Use 'elevation': 'elevation_island' to get an island.
   # Moisture and terrain type are also controlled via this.
-  # "control-setting:moisture:frequency:multiplier is the inverse of the moisture scale in the map generator GUI."
-  # "control-setting:moisture:bias is the moisture bias in the map generator GUI."
-  # "control-setting:aux:frequency:multiplier is the inverse of the terrain type scale in the map generator GUI."
-  # "control-setting:aux:bias is the teraain type bias in the map generator GUI."
+  # "control:moisture:frequency is the inverse of the moisture scale in the map generator GUI."
+  # "control:moisture:bias is the moisture bias in the map generator GUI."
+  # "control:aux:frequency is the inverse of the terrain type scale in the map generator GUI."
+  # "control:aux:bias is the teraain type bias in the map generator GUI."
   property_expression_names:
-    control-setting:moisture:frequency:multiplier: '1'
-    control-setting:moisture:bias: '0'
-    control-setting:aux:frequency:multiplier: '1'
-    control-setting:aux:bias: '0'
+    control:moisture:frequency: '1'
+    control:moisture:bias: '0'
+    control:aux:frequency: '1'
+    control:aux:bias: '0'
   starting_points:
   - "x": 0
     "y": 0
   # Use null for a random seed, number for a specific seed.
   seed: null
 
-## @param map_settings.difficulty_settings.recipe_difficulty Enable expensive crafting recipe
-## @param map_settings.difficulty_settings.technology_difficulty Enable expensive research
 ## @param map_settings.difficulty_settings.technology_price_multiplier Research cost multiplier
-## @param map_settings.difficulty_settings.research_queue_setting Possibile values: `after-victory`, `always`, `never`
+## @param map_settings.difficulty_settings.spoil_time_modifier
+## @param map_settings.asteroids.spawning_rate Asteroid Spawing rate
+## @param map_settings.asteroids.max_ray_portals_expanded_per_tick
 ## @skip map_settings.pollution
 ## @extra map_settings.pollution.enabled Enable pollution. Check values.yaml to know what pollution values you can override
 ## @skip map_settings.enemy_evolution
@@ -410,10 +409,11 @@ map_gen_settings:
 ## @param map_settings.max_failed_behavior_count If a behavior fails this many times, the enemy (or enemy group) is destroyed. This solves biters stuck within their own base.
 map_settings:
   difficulty_settings:
-    recipe_difficulty: 0
-    technology_difficulty: 0
     technology_price_multiplier: 1
-    research_queue_setting: after-victory
+    spoil_time_modifier: 1
+  asteroids:
+    max_ray_portals_expanded_per_tick: 100
+    spawning_rate: 1
   pollution:
     enabled: true
     # these are values for 60 ticks (1 simulated second)
@@ -436,7 +436,6 @@ map_settings:
     pollution_factor: 0.0000009
   enemy_expansion:
     enabled: true
-    min_base_spacing: 3
     max_expansion_distance: 7
     friendly_base_influence_radius: 2
     enemy_building_influence_radius: 2
@@ -477,7 +476,7 @@ map_settings:
   path_finder:
     fwd2bwd_ratio: 5
     goal_pressure_ratio: 2
-    max_steps_worked_per_tick: 100
+    max_steps_worked_per_tick: 1000
     max_work_done_per_tick: 8000
     use_path_cache: true
     short_cache_size: 5
@@ -504,7 +503,7 @@ map_settings:
     short_request_max_steps: 1000
     short_request_ratio: 0.5
     min_steps_to_check_path_find_termination: 2000
-    start_to_goal_cost_multiplier_to_terminate_path_find: 500
+    start_to_goal_cost_multiplier_to_terminate_path_find: 2000.0
     overload_levels:
     - 0
     - 100
