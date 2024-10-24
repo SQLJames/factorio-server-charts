@@ -236,6 +236,7 @@ If you do run into any issues with mods, I will try to work with you on finding 
 | `persistence.dataDir.existingClaim` | The name of an existing PVC to use for persistence |        |
 | `persistence.storageClassName`      | Persistent Volume storage class                    | `""`   |
 | `persistence.annotations`           | Persistent Volume Claim annotations                | `{}`   |
+| `persistence.lables`                | Persistent Volume Claim labels                     | `{}`   |
 
 ### Factorio Parameters
 
