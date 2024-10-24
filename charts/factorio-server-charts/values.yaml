@@ -106,6 +106,7 @@ affinity: {}
 ## @extra persistence.dataDir.existingClaim The name of an existing PVC to use for persistence
 ## @param persistence.storageClassName Persistent Volume storage class
 ## @param persistence.annotations Persistent Volume Claim annotations
+## @param persistence.labels Persistent Volume Claim labels
 ## Sets the data persistence volume configuration
 ## IMPORTANT: If you do not setup a PV all your savegames will be lost on pod recreation or helm upgrade
 persistence:
@@ -118,6 +119,8 @@ persistence:
   storageClassName: ""
   ## If you have annotations to spin up a PV i.e. the location. Remove the curly braces
   annotations: {}
+  ## If you have additional labels to apply to the volume
+  labels: {}
 
 
 #### Factorio application configuration ####

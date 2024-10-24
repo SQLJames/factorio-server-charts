@@ -6,6 +6,9 @@ metadata:
   name: {{ template "factorio-server-charts.fullname" . }}-datadir
   labels:
     app: "{{ template "factorio-server-charts.fullname" . }}-{{ .Chart.Version }}"
+    {{- if .Values.persistence.labels }}
+    {{ toYaml .Values.persistence.labels | indent 4 }}
+    {{- end }}
 {{- if .Values.persistence.annotations }}
   annotations:
 {{ toYaml .Values.persistence.annotations | indent 4 }}
