@@ -4,7 +4,7 @@
 
 #### Non-Breaking Changes
 
-- Updated version of the factorio badge to 2.0.9
+- Updated version of the factorio badge to 2.0.10
 
 ### V2.0.1
 
