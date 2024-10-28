@@ -307,6 +307,42 @@ rcon:
   # rcon port
   port: 30100
 
+## @param rcon_api.enabled Enable or disable the RCON API service
+## @param rcon_api.image.repository RCON-API image repository
+## @param rcon_api.image.tag RCON-API image tag (immutable tags are recommended)
+## @param rcon_api.image.pullPolicy RCON-API image pull policy
+## @param rcon_api.type Kubernetes service type for the RCON API (e.g., ClusterIP, NodePort, LoadBalancer)
+## @param rcon_api.serviceAnnotations Annotations to add to the RCON API service
+## @param rcon_api.httpPort Internal port on which the HTTP API for RCON is exposed
+## @param rcon_api.grpcPort Internal port on which the gRPC API for RCON is exposed
+## @param rcon_api.ingress.enabled Enable or disable the Ingress for the RCON API service
+## @param rcon_api.ingress.hostname Hostname for the RCON API Ingress
+## @param rcon_api.ingress.className Ingress class name for selecting the Ingress controller (e.g., nginx, cilium)
+## @param rcon_api.ingress.annotations Additional annotations for the Ingress resource
+## @param rcon_api.ingress.tls.enabled Enable or disable TLS for the Ingress
+## @param rcon_api.ingress.tls.secretName Kubernetes Secret name for TLS certificates used by the Ingress
+rcon_api:
+  enabled: false
+  image:
+    repository: "ghcr.io/nekomeowww/factorio-rcon-api"
+    pullPolicy: Always
+    tag: latest
+  type: ClusterIP
+  serviceAnnotations: {}
+  httpPort: 30110
+  grpcPort: 30111
+
+  ingress:
+    enabled: true
+    hostname: "factorio.example.com"
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    tls:
+      enabled: true
+      secretName: "cert-factorio.example.com"
+
 ## @param map_gen_settings.width Map width in tiles; 0 means infinite
 ## @param map_gen_settings.height Map height in tiles; 0 means infinite
 ## @param map_gen_settings.starting_area Multiplier for biter free zone radius

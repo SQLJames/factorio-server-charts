@@ -121,7 +121,7 @@ spec:
               mountPath: /factorio
             - name: {{ template "factorio-server-charts.fullname" . }}-save-importer-configmap
               mountPath: /scripts
-        {{- end }}        
+        {{- end }}
       containers:
       - name: {{ template "factorio-server-charts.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -171,6 +171,44 @@ spec:
           value: {{ .Values.factorioServer.enable_space_age | quote }}
         - name: CONFIG
           value: /factorio/configs
+{{- if .Values.rcon_api.enabled }}
+      - name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
+        image: "{{ .Values.rcon_api.image.repository }}:{{ .Values.rcon_api.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - curl -s localhost:24180/api/v1/factorio/console/command/version | grep -q -E '{"version":".*"}'
+          periodSeconds: 10
+          initialDelaySeconds: 5
+          failureThreshold: 3
+        ports:
+        - name: rcon-api
+          containerPort: 24180
+          protocol: TCP
+        - containerPort: 24181
+          protocol: TCP
+        env:
+        - name: FACTORIO_RCON_HOST
+          value: "localhost"
+        - name: FACTORIO_RCON_PORT
+          value: "27015"
+        - name: FACTORIO_RCON_PASSWORD
+          {{- if .Values.rcon.passwordSecret }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.rcon.passwordSecret }}
+              key: rconpw
+          {{- else }}
+          value: {{ .Values.rcon.password | quote }}
+          {{- end }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

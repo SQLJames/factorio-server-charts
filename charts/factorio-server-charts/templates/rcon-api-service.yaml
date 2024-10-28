@@ -1,0 +1,34 @@
+{{- if .Values.rcon_api.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
+  labels:
+    app: {{ template "factorio-server-charts.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+  {{- range $key, $value := .Values.rcon_api.serviceAnnotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  type: {{ .Values.rcon_api.type }}
+  ports:
+    - name: http
+      port: {{ .Values.rcon_api.httpPort }}
+      targetPort: 24180
+    {{- if eq .Values.rcon_api.type "NodePort" }}
+      nodePort: {{ .Values.rcon_api.httpPort }}
+    {{- end }}
+      protocol: TCP
+    - name: grpc
+      port: {{ .Values.rcon_api.grpcPort }}
+      targetPort: 24181
+    {{- if eq .Values.rcon_api.type "NodePort" }}
+      nodePort: {{ .Values.rcon_api.grpcPort }}
+    {{- end }}
+      protocol: TCP
+  selector:
+    app: {{ template "factorio-server-charts.fullname" . }}
+{{- end }}
