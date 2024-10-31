@@ -17,7 +17,7 @@ spec:
   ports:
     - name: rcon
       port: {{ .Values.rcon.port }}
-      targetPort: {{ .Values.factorioServer.rcon_port | quote }}
+      targetPort: {{ .Values.factorioServer.rcon_port }}
     {{- if eq .Values.rcon.type "NodePort" }}
       nodePort: {{ .Values.rcon.port}}
     {{- end }}
