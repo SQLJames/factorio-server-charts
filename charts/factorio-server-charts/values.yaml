@@ -145,6 +145,7 @@ mods:
 ## @param factorioServer.generate_new_save Generate a new save if `save_name` is not found
 ## @param factorioServer.update_mods_on_start Update mods on server start
 ## @param factorioServer.load_latest_save Lets the game know if you want to load the latest save
+## @param factorioServer.rcon_port Factorio Server RCON port
 factorioServer:
   # name to use for the save file
   save_name: "replaceMe"
@@ -156,6 +157,10 @@ factorioServer:
   load_latest_save: true
   # enables or disables the mods for DLC Space Age in mod-list.json
   enable_space_age: true
+  # factorio game rcon port
+  # this port setting is typically for internal Kubernetes configuration only, and in most cases, it does not need to be modified.
+  # if it is necessary to change the rcon server port where you connect to it, update the "rcon.port" value accordingly.
+  rcon_port: 27015
 
 import_save:
   # enable save importer
@@ -290,7 +295,7 @@ server_settings:
 ## @param rcon.external Enable RCON external access (deploy RCON service)
 ## @param rcon.type RCON service type
 ## @param rcon.serviceAnnotations RCON service annotations
-## @param rcon.passwordSecret Existing secret containing a `password` data field
+## @param rcon.passwordSecret Existing secret containing a `rconpw` data field
 ## @param rcon.password Password for RCON, ignored if `rcon.passwordSecret` is set
 ## @param rcon.port RCON service external port
 # Password and port for the rcon service
@@ -298,7 +303,7 @@ rcon:
   external: true
   type: LoadBalancer
   serviceAnnotations: {}
-  # Existing secret containing a `password` data field
+  # Existing secret containing a `rconpw` data field
   passwordSecret: ""
 
   # Password for rcon

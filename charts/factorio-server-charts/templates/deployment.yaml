@@ -143,7 +143,7 @@ spec:
         - name: factorio
           containerPort: 34197
           protocol: UDP
-        - containerPort: 27015
+        - containerPort: {{ .Values.factorioServer.rcon_port | quote }}
           protocol: TCP
         resources:
 {{ toYaml .Values.resources | indent 10 }}
@@ -171,6 +171,8 @@ spec:
           value: {{ .Values.factorioServer.enable_space_age | quote }}
         - name: CONFIG
           value: /factorio/configs
+        - name: RCON_PORT
+          value: {{ .Values.factorioServer.rcon_port | quote }}
 {{- if .Values.rcon_api.enabled }}
       - name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
         image: "{{ .Values.rcon_api.image.repository }}:{{ .Values.rcon_api.image.tag }}"
@@ -196,7 +198,7 @@ spec:
         - name: FACTORIO_RCON_HOST
           value: "localhost"
         - name: FACTORIO_RCON_PORT
-          value: "27015"
+          value: {{ .Values.factorioServer.rcon_port | quote }}
         - name: FACTORIO_RCON_PASSWORD
           {{- if .Values.rcon.passwordSecret }}
           valueFrom:
