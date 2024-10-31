@@ -180,11 +180,9 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - curl -s localhost:24180/api/v1/factorio/console/command/version | grep -q -E '{"version":".*"}'
+          httpGet:
+            path: /healthz
+            port: rcon-api
           periodSeconds: 10
           initialDelaySeconds: 5
           failureThreshold: 3
