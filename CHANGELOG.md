@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.0.4
+
+#### Non-Breaking Changes
+
+- Added new PVC labels - Thank you ohnoitsyou 
+
 ### V2.0.3
 
 #### Non-Breaking Changes
