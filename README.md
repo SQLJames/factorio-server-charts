@@ -8,9 +8,9 @@
 ## TL;DR;
 
 ```console
-$ helm repo add github https://github.com/SQLJames/factorio-server-charts
+$ helm repo add factorio https://sqljames.github.io/factorio-server-charts
 $ helm repo update
-$ helm install  github/factorio-server-charts -n  --version=1.0.2
+$ helm install factorio/factorio-server-charts -n factorio --version=2.0.4
 ```
 
 ## Introduction
