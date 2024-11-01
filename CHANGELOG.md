@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.0.3
+
+#### Non-Breaking Changes
+
+- Updated Chart test to wait for the service to become available before testing rcon port
+
 ### V2.0.2
 
 #### Non-Breaking Changes
