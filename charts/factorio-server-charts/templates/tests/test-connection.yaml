@@ -12,10 +12,19 @@ spec:
       image: outdead/rcon
       command:
         - /bin/sh
-        - -ec
+        - -xec
         - |
+          until nc -z {{ include "factorio-server-charts.fullname" . }}-rcon {{ .Values.rcon.port }}; do
+            echo "Waiting for main service to be ready..." >&2
+            sleep 5
+          done
+          echo "Main service is ready, proceeding with connection test."
           RCONPW="$(cat /rconpw/rconpw)"
-          ./rcon -a {{ include "factorio-server-charts.fullname" . }}-rcon:{{ .Values.rcon.port }} -p $RCONPW -t rcon -T 180s /s Test
+          if ./rcon -a {{ include "factorio-server-charts.fullname" . }}-rcon:{{ .Values.rcon.port }} -p $RCONPW -t rcon -T 180s /s Test; then
+            echo "RCON test command completed successfully."
+          else
+            echo "RCON test failed." >&2
+          fi
       volumeMounts:
         - mountPath: /rconpw
           name: rconpw
