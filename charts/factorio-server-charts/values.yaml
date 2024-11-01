@@ -317,7 +317,7 @@ port_fixer:
     repository: "ghcr.io/zcube/factorio-port-fixer"
     pullPolicy: Always
     tag: latest
-  # port: '34197'
+  port: ''
 
 ## @param rcon.external Enable RCON external access (deploy RCON service)
 ## @param rcon.type RCON service type
