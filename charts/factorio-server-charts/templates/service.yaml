@@ -20,7 +20,7 @@ spec:
   {{- end }}
   ports:
     - name: factorio
-      targetPort: 34197
+      targetPort: {{ .Values.factorioServer.port }}
       port: {{ .Values.service.port }}
       protocol: UDP
       {{- if eq .Values.service.type "NodePort" }}

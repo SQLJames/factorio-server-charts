@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.1.0
+
+#### Non-Breaking Changes
+
+- Added support for [ZCube/factorio-port-fixer](https://github.com/ZCube/factorio-port-fixer) including corresponding fields for values.yaml
+
 ### V2.0.4
 
 #### Non-Breaking Changes
