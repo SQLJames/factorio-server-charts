@@ -377,7 +377,7 @@ rcon_api:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
     tls:
-      enabled: true
+      enabled: false
       secretName: "cert-factorio.example.com"
 
 ## @param map_gen_settings.width Map width in tiles; 0 means infinite
