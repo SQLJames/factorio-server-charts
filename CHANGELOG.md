@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.2.0
+
+#### Non-Breaking Changes
+
+- Added support for [nekomeowww/factorio-rcon-api](https://github.com/nekomeowww/factorio-rcon-api) including corresponding fields for values.yaml
+
 ### V2.1.0
 
 #### Non-Breaking Changes

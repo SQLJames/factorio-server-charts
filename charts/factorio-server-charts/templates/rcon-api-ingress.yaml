@@ -1,0 +1,41 @@
+{{- if and .Values.rconAPI.enabled .Values.rconAPI.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
+  annotations:
+  {{- range $key, $value := .Values.rconAPI.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  labels:
+    app: {{ template "factorio-server-charts.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ingressClassName: {{ .Values.rconAPI.ingress.className }}
+  rules:
+    - host: {{ .Values.rconAPI.ingress.hostname }}
+      http:
+        paths:
+          - backend:
+              service:
+                name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
+                port:
+                  number: {{ .Values.rconAPI.httpPort }}
+            path: /
+            pathType: Prefix
+          - backend:
+              service:
+                name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
+                port:
+                  number: {{ .Values.rconAPI.grpcPort }}
+            path: /grpc
+            pathType: Prefix
+  {{- if and .Values.rconAPI.ingress.tls.enabled .Values.rconAPI.ingress.tls.secretName }}
+  tls:
+    - hosts:
+        - {{ .Values.rconAPI.ingress.hostname }}
+      secretName: {{ .Values.rconAPI.ingress.tls.secretName }}
+  {{- end }}
+{{- end }}

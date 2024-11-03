@@ -149,6 +149,7 @@ mods:
 ## @param factorioServer.update_mods_on_start Update mods on server start
 ## @param factorioServer.load_latest_save Lets the game know if you want to load the latest save
 ## @param factorioServer.port Factorio Game Server port
+## @param factorioServer.rcon_port Factorio Server RCON port
 factorioServer:
   # name to use for the save file
   save_name: "replaceMe"
@@ -165,6 +166,10 @@ factorioServer:
   # this port setting is typically for internal Kubernetes configuration only, and in most cases, it does not need to be modified.
   # if it is necessary to change the game server port where you connect to the game, update the "service.port" value accordingly.
   port: 31497
+  # factorio game rcon port
+  # this port setting is typically for internal Kubernetes configuration only, and in most cases, it does not need to be modified.
+  # if it is necessary to change the rcon server port where you connect to it, update the "rcon.port" value accordingly.
+  rcon_port: 27015
 
 import_save:
   # enable save importer
@@ -322,7 +327,7 @@ port_fixer:
 ## @param rcon.external Enable RCON external access (deploy RCON service)
 ## @param rcon.type RCON service type
 ## @param rcon.serviceAnnotations RCON service annotations
-## @param rcon.passwordSecret Existing secret containing a `password` data field
+## @param rcon.passwordSecret Existing secret containing a `rconpw` data field
 ## @param rcon.password Password for RCON, ignored if `rcon.passwordSecret` is set
 ## @param rcon.port RCON service external port
 # Password and port for the rcon service
@@ -330,7 +335,7 @@ rcon:
   external: true
   type: LoadBalancer
   serviceAnnotations: {}
-  # Existing secret containing a `password` data field
+  # Existing secret containing a `rconpw` data field
   passwordSecret: ""
 
   # Password for rcon
@@ -338,6 +343,42 @@ rcon:
 
   # rcon port
   port: 30100
+
+## @param rconAPI.enabled Enable or disable the RCON API service
+## @param rconAPI.image.repository RCON-API image repository
+## @param rconAPI.image.tag RCON-API image tag (immutable tags are recommended)
+## @param rconAPI.image.pullPolicy RCON-API image pull policy
+## @param rconAPI.type Kubernetes service type for the RCON API (e.g., ClusterIP, NodePort, LoadBalancer)
+## @param rconAPI.serviceAnnotations Annotations to add to the RCON API service
+## @param rconAPI.httpPort Internal port on which the HTTP API for RCON is exposed
+## @param rconAPI.grpcPort Internal port on which the gRPC API for RCON is exposed
+## @param rconAPI.ingress.enabled Enable or disable the Ingress for the RCON API service
+## @param rconAPI.ingress.hostname Hostname for the RCON API Ingress
+## @param rconAPI.ingress.className Ingress class name for selecting the Ingress controller (e.g., nginx, cilium)
+## @param rconAPI.ingress.annotations Additional annotations for the Ingress resource
+## @param rconAPI.ingress.tls.enabled Enable or disable TLS for the Ingress
+## @param rconAPI.ingress.tls.secretName Kubernetes Secret name for TLS certificates used by the Ingress
+rconAPI:
+  enabled: false
+  image:
+    repository: "ghcr.io/nekomeowww/factorio-rcon-api"
+    pullPolicy: Always
+    tag: latest
+  type: ClusterIP
+  serviceAnnotations: {}
+  httpPort: 30110
+  grpcPort: 30111
+
+  ingress:
+    enabled: true
+    hostname: "factorio.example.com"
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    tls:
+      enabled: false
+      secretName: "cert-factorio.example.com"
 
 ## @param map_gen_settings.width Map width in tiles; 0 means infinite
 ## @param map_gen_settings.height Map height in tiles; 0 means infinite
