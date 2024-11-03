@@ -106,6 +106,7 @@ affinity: {}
 ## @extra persistence.dataDir.existingClaim The name of an existing PVC to use for persistence
 ## @param persistence.storageClassName Persistent Volume storage class
 ## @param persistence.annotations Persistent Volume Claim annotations
+## @param persistence.labels Persistent Volume Claim labels
 ## Sets the data persistence volume configuration
 ## IMPORTANT: If you do not setup a PV all your savegames will be lost on pod recreation or helm upgrade
 persistence:
@@ -118,6 +119,8 @@ persistence:
   storageClassName: ""
   ## If you have annotations to spin up a PV i.e. the location. Remove the curly braces
   annotations: {}
+  ## If you have additional labels to apply to the volume
+  labels: {}
 
 
 #### Factorio application configuration ####
@@ -145,6 +148,7 @@ mods:
 ## @param factorioServer.generate_new_save Generate a new save if `save_name` is not found
 ## @param factorioServer.update_mods_on_start Update mods on server start
 ## @param factorioServer.load_latest_save Lets the game know if you want to load the latest save
+## @param factorioServer.port Factorio Game Server port
 ## @param factorioServer.rcon_port Factorio Server RCON port
 factorioServer:
   # name to use for the save file
@@ -157,6 +161,11 @@ factorioServer:
   load_latest_save: true
   # enables or disables the mods for DLC Space Age in mod-list.json
   enable_space_age: true
+  # factorio game server port
+  # the default game port (34197) has been changed to 31497 to resolve issues when using the port-fixer.
+  # this port setting is typically for internal Kubernetes configuration only, and in most cases, it does not need to be modified.
+  # if it is necessary to change the game server port where you connect to the game, update the "service.port" value accordingly.
+  port: 31497
   # factorio game rcon port
   # this port setting is typically for internal Kubernetes configuration only, and in most cases, it does not need to be modified.
   # if it is necessary to change the rcon server port where you connect to it, update the "rcon.port" value accordingly.
@@ -291,6 +300,29 @@ server_settings:
   minimum_segment_size_peer_count: 20
   maximum_segment_size: 100
   maximum_segment_size_peer_count: 10
+
+## @section Port-Fixer Parameters
+## @param port_fixer.enabled Enable the Factorio Port Fixer
+## @param image.repository Factorio port-fixer image repository
+## @param image.tag Factorio port fixer image tag (immutable tags are recommended)
+## @param image.pullPolicy Factorio port fixer image pull policy
+## @param image.port Factorio port to announce via port-fixer, defaults to service.port
+port_fixer:
+  # Adds an extra container that tries to help with connection issues via the public server browser.
+  # This is especially useful when you can’t set up outgoing static port mappings and see log messages like these:
+  # > Warning ServerRouter.cpp:541: Received own address message reply with conflicting address (got IP ADDR:({<ip>:19296}), expected IP ADDR:({<ip>:58037}))
+  # > Warning ServerMultiplayerManager.cpp:651: Determining own address has failed. Best guess: IP ADDR:({<ip>:58037})
+  # > Warning ServerRouter.cpp:541: Received own address message reply with conflicting address (got IP ADDR:({<ip>:19297}), expected IP ADDR:({<ip>:58037}))
+  # > Warning ServerRouter.cpp:541: Received own address message reply with conflicting address (got IP ADDR:({<ip>:24105}), expected IP ADDR:({<ip>:58037}))
+  # Note: Port forwarding for incoming traffic still needs to be set up properly for this to work.
+  # For more info, check out:
+  #   - https://github.com/SQLJames/factorio-server-charts/issues/15
+  enabled: false
+  image:
+    repository: "ghcr.io/zcube/factorio-port-fixer"
+    pullPolicy: Always
+    tag: latest
+  port: ''
 
 ## @param rcon.external Enable RCON external access (deploy RCON service)
 ## @param rcon.type RCON service type

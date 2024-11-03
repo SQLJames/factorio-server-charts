@@ -1,10 +1,28 @@
 ## Changelog
 
-### V2.0.3
+### V2.1.1
 
 #### Non-Breaking Changes
 
 - Added support for [nekomeowww/factorio-rcon-api](https://github.com/nekomeowww/factorio-rcon-api) including corresponding fields for values.yaml
+
+### V2.1.0
+
+#### Non-Breaking Changes
+
+- Added support for [ZCube/factorio-port-fixer](https://github.com/ZCube/factorio-port-fixer) including corresponding fields for values.yaml
+
+### V2.0.4
+
+#### Non-Breaking Changes
+
+- Added new PVC labels - Thank you ohnoitsyou 
+
+### V2.0.3
+
+#### Non-Breaking Changes
+
+- Updated Chart test to wait for the service to become available before testing rcon port
 
 ### V2.0.2
 

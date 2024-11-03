@@ -141,7 +141,7 @@ spec:
           failureThreshold: 3
         ports:
         - name: factorio
-          containerPort: 34197
+          containerPort: {{ .Values.factorioServer.port }}
           protocol: UDP
         - containerPort: {{ .Values.factorioServer.rcon_port }}
           protocol: TCP
@@ -171,24 +171,50 @@ spec:
           value: {{ .Values.factorioServer.enable_space_age | quote }}
         - name: CONFIG
           value: /factorio/configs
+        - name: PORT
+          value: {{ .Values.factorioServer.port | quote }}
         - name: RCON_PORT
           value: {{ .Values.factorioServer.rcon_port | quote }}
-{{- if .Values.rcon_api.enabled }}
-      - name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
-        image: "{{ .Values.rcon_api.image.repository }}:{{ .Values.rcon_api.image.tag }}"
-        imagePullPolicy: {{ .Values.rcon_api.image.pullPolicy }}
+{{- if .Values.port_fixer.enabled }}
+      - name: {{ template "factorio-server-charts.fullname" . }}-port-fixer
+        image: "{{ .Values.port_fixer.image.repository }}:{{ .Values.port_fixer.image.tag }}"
+        imagePullPolicy: {{ .Values.port_fixer.image.pullPolicy }}
         {{- with .Values.securityContext }}
         securityContext:
           {{- toYaml . | nindent 10 }}
         {{- end }}
+        command: ["/factorio-port-fixer"]
+        args:
+        - local
+        - --ip=127.0.0.1
+        - --port=34197
+        - --remotePort={{ .Values.port_fixer.port | default .Values.service.port }}
         livenessProbe:
           httpGet:
-            path: /healthz
-            port: rcon-api
+            path: /health
+            port: port-fixer
           periodSeconds: 10
           initialDelaySeconds: 5
           failureThreshold: 3
         ports:
+        - name: port-fixer
+          containerPort: 34197
+          protocol: TCP
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - pingpong1.factorio.com
+        - pingpong2.factorio.com
+        - pingpong3.factorio.com
+        - pingpong4.factorio.com
+{{- if .Values.rcon_api.enabled }}
+      - name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
+        image: "{{ .Values.rcon_api.image.repository }}:{{ .Values.rcon_api.image.tag }}"
+        imagePullPolicy: {{ .Values.rcon_api.image.pullPolicy }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: rcon-api
         - name: rcon-api
           containerPort: 24180
           protocol: TCP
