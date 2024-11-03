@@ -141,7 +141,7 @@ spec:
           failureThreshold: 3
         ports:
         - name: factorio
-          containerPort: 34197
+          containerPort: {{ .Values.factorioServer.port }}
           protocol: UDP
         - containerPort: 27015
           protocol: TCP
@@ -171,6 +171,41 @@ spec:
           value: {{ .Values.factorioServer.enable_space_age | quote }}
         - name: CONFIG
           value: /factorio/configs
+        - name: PORT
+          value: {{ .Values.factorioServer.port | quote }}
+{{- if .Values.port_fixer.enabled }}
+      - name: {{ template "factorio-server-charts.fullname" . }}-port-fixer
+        image: "{{ .Values.port_fixer.image.repository }}:{{ .Values.port_fixer.image.tag }}"
+        imagePullPolicy: {{ .Values.port_fixer.image.pullPolicy }}
+        {{- with .Values.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        command: ["/factorio-port-fixer"]
+        args:
+        - local
+        - --ip=127.0.0.1
+        - --port=34197
+        - --remotePort={{ .Values.port_fixer.port | default .Values.service.port }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: port-fixer
+          periodSeconds: 10
+          initialDelaySeconds: 5
+          failureThreshold: 3
+        ports:
+        - name: port-fixer
+          containerPort: 34197
+          protocol: TCP
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - pingpong1.factorio.com
+        - pingpong2.factorio.com
+        - pingpong3.factorio.com
+        - pingpong4.factorio.com
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
