@@ -5,6 +5,7 @@
 #### Non-Breaking Changes
 
 - Fixing mod download script to encode spaces properly, fixes [Issue 42](https://github.com/SQLJames/factorio-server-charts/issues/42)
+- Adding update mod check on mod script to avoid it always updating mods, fixes part of[Issue 45](https://github.com/SQLJames/factorio-server-charts/issues/45)
 
 ### V2.2.0
 

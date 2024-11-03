@@ -11,6 +11,13 @@ data:
   # credit to the factoriotools/factorio-docker team, most of this logic came from them
   # https://github.com/factoriotools/factorio-docker/blob/master/docker/files/update-mods.sh
   mod-downloader.sh: |
+    FLAG_FILE="/factorio/mods/.mod_update_complete"
+
+    # Check if flag file exists and UPDATE_MODS_ON_START is not true
+    if [[ -f "$FLAG_FILE" && "${UPDATE_MODS_ON_START}" != "true" ]]; then
+        echo "Mod update already completed previously. Skipping."
+        exit 0
+    fi
     modDir=/factorio/mods
     MOD_BASE_URL="https://mods.factorio.com"
     declare -a officialMods
@@ -109,7 +116,9 @@ data:
         done
       fi
     fi
-
+    # Mark the update as complete by creating the flag file
+    touch "$FLAG_FILE"
+    echo "Mod update completed."
 
 
 

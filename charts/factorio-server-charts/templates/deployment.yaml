@@ -97,6 +97,9 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          env:
+          - name: UPDATE_MODS_ON_START
+            value: {{ .Values.factorioServer.update_mods_on_start | quote }}
           volumeMounts:
             - name: datadir
               mountPath: /factorio
