@@ -85,10 +85,14 @@ spec:
           imagePullPolicy:  {{ .Values.image.pullPolicy }}
           command:
             - /bin/bash
-            - -ec
+            - -ecx
             - |
               mkdir -p /factorio/mods
+              ls -alth /scripts
+              echo "Running mod-downloader.sh script..."
               bash /scripts/mod-downloader.sh
+              echo "Finished mod-downloader.sh script"
+              ls -althR /factorio/mods
           {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}

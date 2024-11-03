@@ -39,6 +39,8 @@ data:
         cd $modDir;curl -L -o $2 $1
     }
     function downloadofficial() {
+        MOD_NAME="$1"
+        MOD_NAME_ENCODED="${1// /%20}"
         if [[ -z ${USERNAME:-} ]]; then
           USERNAME="$(cat /account/username)"
         fi
@@ -54,7 +56,7 @@ data:
         if [[ -z ${TOKEN:-} ]]; then
           echo "You need to provide your Factorio token to update mods."
         fi
-        MOD_INFO_URL="$MOD_BASE_URL/api/mods/$1"
+        MOD_INFO_URL="$MOD_BASE_URL/api/mods/$MOD_NAME_ENCODED"
         MOD_INFO_JSON=$(curl --silent "$MOD_INFO_URL")
     #    echo "$MOD_INFO_URL $MOD_INFO_JSON"
         if ! echo "$MOD_INFO_JSON" | jq -e .name >/dev/null; then

@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.2.1
+
+#### Non-Breaking Changes
+
+- Fixing mod download script to encode spaces properly, fixes [Issue 42](https://github.com/SQLJames/factorio-server-charts/issues/42)
+
 ### V2.2.0
 
 #### Non-Breaking Changes
