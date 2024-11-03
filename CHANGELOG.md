@@ -1,6 +1,6 @@
 ## Changelog
 
-### V2.1.1
+### V2.2.0
 
 #### Non-Breaking Changes
 

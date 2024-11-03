@@ -1,4 +1,4 @@
-{{- if .Values.rcon_api.enabled }}
+{{- if .Values.rconAPI.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,24 +9,24 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- range $key, $value := .Values.rcon_api.serviceAnnotations }}
+  {{- range $key, $value := .Values.rconAPI.serviceAnnotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
-  type: {{ .Values.rcon_api.type }}
+  type: {{ .Values.rconAPI.type }}
   ports:
     - name: http
-      port: {{ .Values.rcon_api.httpPort }}
+      port: {{ .Values.rconAPI.httpPort }}
       targetPort: 24180
-    {{- if eq .Values.rcon_api.type "NodePort" }}
-      nodePort: {{ .Values.rcon_api.httpPort }}
+    {{- if eq .Values.rconAPI.type "NodePort" }}
+      nodePort: {{ .Values.rconAPI.httpPort }}
     {{- end }}
       protocol: TCP
     - name: grpc
-      port: {{ .Values.rcon_api.grpcPort }}
+      port: {{ .Values.rconAPI.grpcPort }}
       targetPort: 24181
-    {{- if eq .Values.rcon_api.type "NodePort" }}
-      nodePort: {{ .Values.rcon_api.grpcPort }}
+    {{- if eq .Values.rconAPI.type "NodePort" }}
+      nodePort: {{ .Values.rconAPI.grpcPort }}
     {{- end }}
       protocol: TCP
   selector:

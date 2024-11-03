@@ -1,10 +1,10 @@
-{{- if and .Values.rcon_api.enabled .Values.rcon_api.ingress.enabled }}
+{{- if and .Values.rconAPI.enabled .Values.rconAPI.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
   annotations:
-  {{- range $key, $value := .Values.rcon_api.ingress.annotations }}
+  {{- range $key, $value := .Values.rconAPI.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   labels:
@@ -13,29 +13,29 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  ingressClassName: {{ .Values.rcon_api.ingress.className }}
+  ingressClassName: {{ .Values.rconAPI.ingress.className }}
   rules:
-    - host: {{ .Values.rcon_api.ingress.hostname }}
+    - host: {{ .Values.rconAPI.ingress.hostname }}
       http:
         paths:
           - backend:
               service:
                 name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
                 port:
-                  number: {{ .Values.rcon_api.httpPort }}
+                  number: {{ .Values.rconAPI.httpPort }}
             path: /
             pathType: Prefix
           - backend:
               service:
                 name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
                 port:
-                  number: {{ .Values.rcon_api.grpcPort }}
+                  number: {{ .Values.rconAPI.grpcPort }}
             path: /grpc
             pathType: Prefix
-  {{- if and .Values.rcon_api.ingress.tls.enabled .Values.rcon_api.ingress.tls.secretName }}
+  {{- if and .Values.rconAPI.ingress.tls.enabled .Values.rconAPI.ingress.tls.secretName }}
   tls:
     - hosts:
-        - {{ .Values.rcon_api.ingress.hostname }}
-      secretName: {{ .Values.rcon_api.ingress.tls.secretName }}
+        - {{ .Values.rconAPI.ingress.hostname }}
+      secretName: {{ .Values.rconAPI.ingress.tls.secretName }}
   {{- end }}
 {{- end }}

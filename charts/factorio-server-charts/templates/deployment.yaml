@@ -208,10 +208,10 @@ spec:
         - pingpong3.factorio.com
         - pingpong4.factorio.com
 {{- end }}
-{{- if .Values.rcon_api.enabled }}
+{{- if .Values.rconAPI.enabled }}
       - name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
-        image: "{{ .Values.rcon_api.image.repository }}:{{ .Values.rcon_api.image.tag }}"
-        imagePullPolicy: {{ .Values.rcon_api.image.pullPolicy }}
+        image: "{{ .Values.rconAPI.image.repository }}:{{ .Values.rconAPI.image.tag }}"
+        imagePullPolicy: {{ .Values.rconAPI.image.pullPolicy }}
         livenessProbe:
           httpGet:
             path: /healthz
