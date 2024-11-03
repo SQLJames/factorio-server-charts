@@ -207,6 +207,7 @@ spec:
         - pingpong2.factorio.com
         - pingpong3.factorio.com
         - pingpong4.factorio.com
+{{- end }}
 {{- if .Values.rcon_api.enabled }}
       - name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
         image: "{{ .Values.rcon_api.image.repository }}:{{ .Values.rcon_api.image.tag }}"
