@@ -1,5 +1,12 @@
 ## Changelog
 
+### V2.2.1
+
+#### Non-Breaking Changes
+
+- Correct issues in deployment when `rconAPI` and `port_fixer` are used simultaniously.
+- Add missing `ports` key to rconAPI container
+
 ### V2.2.0
 
 #### Non-Breaking Changes
