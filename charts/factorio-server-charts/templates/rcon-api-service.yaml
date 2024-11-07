@@ -14,13 +14,13 @@ metadata:
   {{- end }}
 spec:
   {{- if semverCompare ">=1.20.0-0" .Capabilities.KubeVersion.Version -}}
-  {{- if .Values.controller.service.ipFamilyPolicy }}
-  ipFamilyPolicy: {{ .Values.controller.service.ipFamilyPolicy }}
+  {{- if .Values.rconAPI.ipFamilyPolicy }}
+  ipFamilyPolicy: {{ .Values.rconAPI.ipFamilyPolicy }}
   {{- end }}
   {{- end }}
   {{- if semverCompare ">=1.20.0-0" .Capabilities.KubeVersion.Version -}}
-  {{- if .Values.controller.service.ipFamilies }}
-  ipFamilies: {{ toYaml .Values.controller.service.ipFamilies | nindent 4 }}
+  {{- if .Values.rconAPI.ipFamilies }}
+  ipFamilies: {{ toYaml .Values.rconAPI.ipFamilies | nindent 4 }}
   {{- end }}
   {{- end }}
   type: {{ .Values.rconAPI.type }}
