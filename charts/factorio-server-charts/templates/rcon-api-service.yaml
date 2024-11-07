@@ -13,6 +13,16 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
 spec:
+  {{- if semverCompare ">=1.20.0-0" .Capabilities.KubeVersion.Version -}}
+  {{- if .Values.rconAPI.ipFamilyPolicy }}
+  ipFamilyPolicy: {{ .Values.rconAPI.ipFamilyPolicy }}
+  {{- end }}
+  {{- end }}
+  {{- if semverCompare ">=1.20.0-0" .Capabilities.KubeVersion.Version -}}
+  {{- if .Values.rconAPI.ipFamilies }}
+  ipFamilies: {{ toYaml .Values.rconAPI.ipFamilies | nindent 4 }}
+  {{- end }}
+  {{- end }}
   type: {{ .Values.rconAPI.type }}
   ports:
     - name: http
