@@ -218,13 +218,16 @@ spec:
         - --ip=127.0.0.1
         - --port=34197
         - --remotePort={{ .Values.port_fixer.port | default .Values.service.port }}
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: port-fixer
-          periodSeconds: 10
-          initialDelaySeconds: 5
-          failureThreshold: 3
+        #
+        # Disabled due to reliability issues: https://github.com/ZCube/factorio-port-fixer/issues/1
+        #
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: port-fixer
+        #   periodSeconds: 10
+        #   initialDelaySeconds: 5
+        #   failureThreshold: 3
         ports:
         - name: port-fixer
           containerPort: 34197

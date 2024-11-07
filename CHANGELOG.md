@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.2.2
+
+#### Non-Breaking Changes
+
+- Disabled port-fixer livenessProbe due to reliability issues
+
 ### V2.2.1
 
 #### Non-Breaking Changes
