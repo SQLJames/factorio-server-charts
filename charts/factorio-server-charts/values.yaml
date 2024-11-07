@@ -48,6 +48,17 @@ nodeSelector: {}
 ## The best way ist to define a ClusterIP service and define one or more externalIPs. Of course this IPs must be available on the node the factorio pod runs on!
 service:
   type: NodePort
+  ## Represents the dual-stack-ness requested or required by this Service. Possible values are
+  ## SingleStack, PreferDualStack or RequireDualStack.
+  ## The ipFamilies and clusterIPs fields depend on the value of this field.
+  ## Ref: https://kubernetes.io/docs/concepts/services-networking/dual-stack/
+  #ipFamilyPolicy: "SingleStack"
+
+  ## List of IP families (e.g. IPv4, IPv6) assigned to the service. This field is usually assigned automatically
+  ## based on cluster configuration and the ipFamilyPolicy field.
+  ## Ref: https://kubernetes.io/docs/concepts/services-networking/dual-stack/
+  #ipFamilies:
+  #  - IPv4
   port: 31497
   ## If you are able to map an external IP, set it here
   # externalIPs:
@@ -332,6 +343,17 @@ port_fixer:
 ## @param rcon.port RCON service external port
 # Password and port for the rcon service
 rcon:
+  ## Represents the dual-stack-ness requested or required by this Service. Possible values are
+  ## SingleStack, PreferDualStack or RequireDualStack.
+  ## The ipFamilies and clusterIPs fields depend on the value of this field.
+  ## Ref: https://kubernetes.io/docs/concepts/services-networking/dual-stack/
+  #ipFamilyPolicy: "SingleStack"
+
+  ## List of IP families (e.g. IPv4, IPv6) assigned to the service. This field is usually assigned automatically
+  ## based on cluster configuration and the ipFamilyPolicy field.
+  ## Ref: https://kubernetes.io/docs/concepts/services-networking/dual-stack/
+  #ipFamilies:
+  #  - IPv4
   external: true
   type: LoadBalancer
   serviceAnnotations: {}
@@ -359,6 +381,17 @@ rcon:
 ## @param rconAPI.ingress.tls.enabled Enable or disable TLS for the Ingress
 ## @param rconAPI.ingress.tls.secretName Kubernetes Secret name for TLS certificates used by the Ingress
 rconAPI:
+  ## Represents the dual-stack-ness requested or required by this Service. Possible values are
+  ## SingleStack, PreferDualStack or RequireDualStack.
+  ## The ipFamilies and clusterIPs fields depend on the value of this field.
+  ## Ref: https://kubernetes.io/docs/concepts/services-networking/dual-stack/
+  #ipFamilyPolicy: "SingleStack"
+
+  ## List of IP families (e.g. IPv4, IPv6) assigned to the service. This field is usually assigned automatically
+  ## based on cluster configuration and the ipFamilyPolicy field.
+  ## Ref: https://kubernetes.io/docs/concepts/services-networking/dual-stack/
+  #ipFamilies:
+  #  - IPv4
   enabled: false
   image:
     repository: "ghcr.io/nekomeowww/factorio-rcon-api"

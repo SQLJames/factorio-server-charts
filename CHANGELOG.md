@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.2.3
+
+#### Non-Breaking Changes
+
+- Adding support for ipFamilyPolicy, fixing [Issue 63](https://github.com/SQLJames/factorio-server-charts/issues/63)
+
 ### V2.2.2
 
 #### Non-Breaking Changes
