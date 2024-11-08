@@ -14,8 +14,13 @@ replicaCount: 1
 
 hostNetworkEnabled: true
 
+# https://github.com/factoriotools/factorio-docker/blob/master/docker/Dockerfile
 securityContext:
-  runAsUser: 0
+  fsGroup: 845
+
+podSecurityContext:
+  runAsUser: 845
+  runAsGroup: 845
 
 #### Image Configuration ####
 ## @section Image Parameters
