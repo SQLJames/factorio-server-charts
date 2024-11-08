@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.3.0
+
+#### Non-Breaking Changes
+
+- Decoupling hostNetworking from the nodePort service. Introduces hostNetworkEnabled in the base of the values. By default this will still enabled with a standard set of values, but can be individually disabled if needed. [Issue 38](https://github.com/SQLJames/factorio-server-charts/issues/38)
+
 ### V2.2.4
 
 #### Non-Breaking Changes
