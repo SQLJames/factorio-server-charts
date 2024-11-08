@@ -86,14 +86,21 @@ spec:
           imagePullPolicy:  {{ .Values.image.pullPolicy }}
           command:
             - /bin/bash
-            - -ec
+            - -ecx
             - |
               mkdir -p /factorio/mods
+              ls -alth /scripts
+              echo "Running mod-downloader.sh script..."
               bash /scripts/mod-downloader.sh
+              echo "Finished mod-downloader.sh script"
+              ls -althR /factorio/mods
           {{- with .Values.podSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          env:
+          - name: UPDATE_MODS_ON_START
+            value: {{ .Values.factorioServer.update_mods_on_start | quote }}
           volumeMounts:
             - name: datadir
               mountPath: /factorio
