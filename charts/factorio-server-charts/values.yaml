@@ -12,6 +12,8 @@
 
 replicaCount: 1
 
+hostNetworkEnabled: true
+
 securityContext:
   runAsUser: 0
 

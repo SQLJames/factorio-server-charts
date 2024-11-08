@@ -23,10 +23,8 @@ spec:
         options:
           - name: ndots
             value: '1'
-      {{- if eq .Values.service.type "NodePort" }}
+      {{- if .Values.hostNetworkEnabled }}
       hostNetwork: true
-      {{- else }}
-      hostNetwork: false
       {{- end }}
       initContainers:
         - name: volume-permissions-serversettingsconfig
