@@ -19,14 +19,16 @@ spec:
       labels:
         app: {{ template "factorio-server-charts.fullname" . }}
     spec:
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       dnsConfig:
         options:
           - name: ndots
             value: '1'
-      {{- if eq .Values.service.type "NodePort" }}
+      {{- if .Values.hostNetworkEnabled }}
       hostNetwork: true
-      {{- else }}
-      hostNetwork: false
       {{- end }}
       initContainers:
         - name: volume-permissions-serversettingsconfig
@@ -55,10 +57,9 @@ spec:
                 jq -M --rawfile game_password /gamePassword/game_password '.game_password=($game_password|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
               fi
               #sleep 100
-              chown -vR factorio:factorio /factorio
               chmod -vR 777 /factorio/configs
               ls -alth /factorio
-          {{- with .Values.securityContext }}
+          {{- with .Values.podSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -93,7 +94,7 @@ spec:
               bash /scripts/mod-downloader.sh
               echo "Finished mod-downloader.sh script"
               ls -althR /factorio/mods
-          {{- with .Values.securityContext }}
+          {{- with .Values.podSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -119,7 +120,7 @@ spec:
             - -ec
             - |
               bash /scripts/save-importer.sh
-          {{- with .Values.securityContext }}
+          {{- with .Values.podSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -133,7 +134,7 @@ spec:
       - name: {{ template "factorio-server-charts.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- with .Values.securityContext }}
+        {{- with .Values.podSecurityContext }}
         securityContext:
           {{- toYaml . | nindent 10 }}
         {{- end }}
@@ -182,39 +183,10 @@ spec:
           value: {{ .Values.factorioServer.port | quote }}
         - name: RCON_PORT
           value: {{ .Values.factorioServer.rcon_port | quote }}
-{{- if .Values.port_fixer.enabled }}
-      - name: {{ template "factorio-server-charts.fullname" . }}-port-fixer
-        image: "{{ .Values.port_fixer.image.repository }}:{{ .Values.port_fixer.image.tag }}"
-        imagePullPolicy: {{ .Values.port_fixer.image.pullPolicy }}
-        {{- with .Values.securityContext }}
-        securityContext:
-          {{- toYaml . | nindent 10 }}
+        {{- range .Values.factorioServer.env }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
         {{- end }}
-        command: ["/factorio-port-fixer"]
-        args:
-        - local
-        - --ip=127.0.0.1
-        - --port=34197
-        - --remotePort={{ .Values.port_fixer.port | default .Values.service.port }}
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: port-fixer
-          periodSeconds: 10
-          initialDelaySeconds: 5
-          failureThreshold: 3
-        ports:
-        - name: port-fixer
-          containerPort: 34197
-          protocol: TCP
-      hostAliases:
-      - ip: "127.0.0.1"
-        hostnames:
-        - pingpong1.factorio.com
-        - pingpong2.factorio.com
-        - pingpong3.factorio.com
-        - pingpong4.factorio.com
-{{- end }}
 {{- if .Values.rconAPI.enabled }}
       - name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
         image: "{{ .Values.rconAPI.image.repository }}:{{ .Values.rconAPI.image.tag }}"
@@ -223,6 +195,7 @@ spec:
           httpGet:
             path: /healthz
             port: rcon-api
+        ports:
         - name: rcon-api
           containerPort: 24180
           protocol: TCP
@@ -242,6 +215,42 @@ spec:
           {{- else }}
           value: {{ .Values.rcon.password | quote }}
           {{- end }}
+{{- end }}
+{{- if .Values.port_fixer.enabled }}
+      - name: {{ template "factorio-server-charts.fullname" . }}-port-fixer
+        image: "{{ .Values.port_fixer.image.repository }}:{{ .Values.port_fixer.image.tag }}"
+        imagePullPolicy: {{ .Values.port_fixer.image.pullPolicy }}
+        {{- with .Values.podSecurityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        command: ["/factorio-port-fixer"]
+        args:
+        - local
+        - --ip=127.0.0.1
+        - --port=34197
+        - --remotePort={{ .Values.port_fixer.port | default .Values.service.port }}
+        #
+        # Disabled due to reliability issues: https://github.com/ZCube/factorio-port-fixer/issues/1
+        #
+        # livenessProbe:
+        #   httpGet:
+        #     path: /health
+        #     port: port-fixer
+        #   periodSeconds: 10
+        #   initialDelaySeconds: 5
+        #   failureThreshold: 3
+        ports:
+        - name: port-fixer
+          containerPort: 34197
+          protocol: TCP
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - pingpong1.factorio.com
+        - pingpong2.factorio.com
+        - pingpong3.factorio.com
+        - pingpong4.factorio.com
 {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:

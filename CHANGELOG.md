@@ -1,11 +1,47 @@
 ## Changelog
 
+### V2.4.1
+
+#### Non-Breaking Changes
+- Fixing mod download script to encode spaces properly, fixes [Issue 42](https://github.com/SQLJames/factorio-server-charts/issues/42)
+- Adding update mod check on mod script to avoid it always updating mods, fixes part of[Issue 45](https://github.com/SQLJames/factorio-server-charts/issues/45)
+
+### V2.4.0
+
+#### Potentially Breaking Changes
+
+- Removing the chown of the data directory initialization and instead switching the security context to use the factorio user specified in [factorio docker](https://github.com/factoriotools/factorio-docker/blob/master/docker/Dockerfile). This will fix the nfs permissions but could potentially cause issues elsewhere if you were setting the security context. 
+
+### V2.3.0
+
+#### Non-Breaking Changes
+
+- Decoupling hostNetworking from the nodePort service. Introduces hostNetworkEnabled in the base of the values. By default this will still enabled with a standard set of values, but can be individually disabled if needed. [Issue 38](https://github.com/SQLJames/factorio-server-charts/issues/38)
+
+### V2.2.4
+
+#### Non-Breaking Changes
+
+- Adding the option to append ENV variables to the factorio server container, fixes  [Issue 66](https://github.com/SQLJames/factorio-server-charts/issues/66) and [Issue 37](https://github.com/SQLJames/factorio-server-charts/issues/37)
+
+### V2.2.3
+
+#### Non-Breaking Changes
+
+- Adding support for ipFamilyPolicy, fixing [Issue 63](https://github.com/SQLJames/factorio-server-charts/issues/63)
+
+### V2.2.2
+
+#### Non-Breaking Changes
+
+- Disabled port-fixer livenessProbe due to reliability issues
+
 ### V2.2.1
 
 #### Non-Breaking Changes
 
-- Fixing mod download script to encode spaces properly, fixes [Issue 42](https://github.com/SQLJames/factorio-server-charts/issues/42)
-- Adding update mod check on mod script to avoid it always updating mods, fixes part of[Issue 45](https://github.com/SQLJames/factorio-server-charts/issues/45)
+- Correct issues in deployment when `rconAPI` and `port_fixer` are used simultaniously.
+- Add missing `ports` key to rconAPI container
 
 ### V2.2.0
 
