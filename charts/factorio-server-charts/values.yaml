@@ -161,6 +161,7 @@ mods:
 ## @param factorioServer.load_latest_save Lets the game know if you want to load the latest save
 ## @param factorioServer.port Factorio Game Server port
 ## @param factorioServer.rcon_port Factorio Server RCON port
+## @param factorioServer.env Additional environment values for the Factorio Server container
 factorioServer:
   # name to use for the save file
   save_name: "replaceMe"
@@ -181,6 +182,10 @@ factorioServer:
   # this port setting is typically for internal Kubernetes configuration only, and in most cases, it does not need to be modified.
   # if it is necessary to change the rcon server port where you connect to it, update the "rcon.port" value accordingly.
   rcon_port: 27015
+  # adding addtional environment variables to the factorio server container
+  env: {}
+    # - name: MY_VAR
+    #   value: "my_value"
 
 import_save:
   # enable save importer

@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.2.4
+
+#### Non-Breaking Changes
+
+- Adding the option to append ENV variables to the factorio server container, fixes  [Issue 66](https://github.com/SQLJames/factorio-server-charts/issues/66) and [Issue 37](https://github.com/SQLJames/factorio-server-charts/issues/37)
+
 ### V2.2.3
 
 #### Non-Breaking Changes
