@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.4.0
+
+#### Potentially Breaking Changes
+
+- Removing the chown of the data directory initialization and instead switching the security context to use the factorio user specified in [factorio docker](https://github.com/factoriotools/factorio-docker/blob/master/docker/Dockerfile). This will fix the nfs permissions but could potentially cause issues elsewhere if you were setting the security context. 
+
 ### V2.3.0
 
 #### Non-Breaking Changes

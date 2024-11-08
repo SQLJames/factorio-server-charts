@@ -53,7 +53,6 @@ spec:
                 jq -M --rawfile game_password /gamePassword/game_password '.game_password=($game_password|gsub("[\\n\\t]"; ""))' /factorio/configs/server-settings.json > /tmp/server-settings.json && mv /tmp/server-settings.json /factorio/configs/server-settings.json
               fi
               #sleep 100
-              chown -vR factorio:factorio /factorio
               chmod -vR 777 /factorio/configs
               ls -alth /factorio
           {{- with .Values.securityContext }}
