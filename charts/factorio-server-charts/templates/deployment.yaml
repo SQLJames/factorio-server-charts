@@ -9,6 +9,10 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
+  {{- with .Values.securityContext }}
+  securityContext:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "factorio-server-charts.fullname" . }}
@@ -55,8 +59,8 @@ spec:
               #sleep 100
               chmod -vR 777 /factorio/configs
               ls -alth /factorio
-          {{- with .Values.securityContext }}
-          securityContext:
+          {{- with .Values.podSecurityContext }}
+          podSecurityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
@@ -86,8 +90,8 @@ spec:
             - |
               mkdir -p /factorio/mods
               bash /scripts/mod-downloader.sh
-          {{- with .Values.securityContext }}
-          securityContext:
+          {{- with .Values.podSecurityContext }}
+          podSecurityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
@@ -109,8 +113,8 @@ spec:
             - -ec
             - |
               bash /scripts/save-importer.sh
-          {{- with .Values.securityContext }}
-          securityContext:
+          {{- with .Values.podSecurityContext }}
+          podSecurityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
@@ -123,8 +127,8 @@ spec:
       - name: {{ template "factorio-server-charts.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        {{- with .Values.securityContext }}
-        securityContext:
+        {{- with .Values.podSecurityContext }}
+        podSecurityContext:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         livenessProbe:
@@ -209,8 +213,8 @@ spec:
       - name: {{ template "factorio-server-charts.fullname" . }}-port-fixer
         image: "{{ .Values.port_fixer.image.repository }}:{{ .Values.port_fixer.image.tag }}"
         imagePullPolicy: {{ .Values.port_fixer.image.pullPolicy }}
-        {{- with .Values.securityContext }}
-        securityContext:
+        {{- with .Values.podSecurityContext }}
+        podSecurityContext:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         command: ["/factorio-port-fixer"]

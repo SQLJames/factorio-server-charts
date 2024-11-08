@@ -16,9 +16,11 @@ hostNetworkEnabled: true
 
 # https://github.com/factoriotools/factorio-docker/blob/master/docker/Dockerfile
 securityContext:
+  fsGroup: 845
+
+podSecurityContext:
   runAsUser: 845
   runAsGroup: 845
-  fsGroup: 845
 
 #### Image Configuration ####
 ## @section Image Parameters
