@@ -175,6 +175,10 @@ spec:
           value: {{ .Values.factorioServer.port | quote }}
         - name: RCON_PORT
           value: {{ .Values.factorioServer.rcon_port | quote }}
+        {{- range .Values.factorioServer.env }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
 {{- if .Values.rconAPI.enabled }}
       - name: {{ template "factorio-server-charts.fullname" . }}-rcon-api
         image: "{{ .Values.rconAPI.image.repository }}:{{ .Values.rconAPI.image.tag }}"
