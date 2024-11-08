@@ -9,10 +9,6 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
-  {{- with .Values.securityContext }}
-  securityContext:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
   selector:
     matchLabels:
       app: {{ template "factorio-server-charts.fullname" . }}
@@ -23,6 +19,10 @@ spec:
       labels:
         app: {{ template "factorio-server-charts.fullname" . }}
     spec:
+      {{- with .Values.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       dnsConfig:
         options:
           - name: ndots
