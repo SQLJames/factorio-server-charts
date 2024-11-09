@@ -1,5 +1,11 @@
 ## Changelog
 
+### V2.5.0
+
+#### Breaking Changes
+
+- Reformatted the mods section to allow users to specify a mod version so it wont try to pull the latest if you don't want it too. This refactor introduces a custom tool [factorio-mod-downloader](https://github.com/SQLJames/factorio-mod-downloader) as an image, which is a simple golang tool, which simplifies the script and improves logging.
+
 ### V2.4.1
 
 #### Non-Breaking Changes

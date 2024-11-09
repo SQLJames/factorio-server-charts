@@ -39,7 +39,9 @@ spec:
             - -ec
             - |
               mkdir -p /factorio/configs
+              mkdir -p /factorio/mods
               mkdir -p /factorio/config
+              echo $VERSION > /factorio/mods/factorioVersion
               cp --verbose /deployed-configs/* /factorio/configs
               if [ -f "/rcon-pw/rconpw" ]; then
                 cp --verbose /rcon-pw/rconpw /factorio/configs/rconpw
@@ -82,14 +84,12 @@ spec:
             {{- end }}
         {{- if .Values.mods.enabled }}
         - name: download-factorio-mods
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy:  {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.mods.image.repository }}:{{ .Values.mods.image.tag }}"
+          imagePullPolicy:  {{ .Values.mods.image.pullPolicy }}
           command:
             - /bin/bash
             - -ecx
             - |
-              mkdir -p /factorio/mods
-              ls -alth /scripts
               echo "Running mod-downloader.sh script..."
               bash /scripts/mod-downloader.sh
               echo "Finished mod-downloader.sh script"
