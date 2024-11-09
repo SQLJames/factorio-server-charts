@@ -147,12 +147,19 @@ persistence:
 ## @param mods.portal List of official mods to be downloaded from Factorio Mod Portal
 ## @param mods.unofficial List of unofficial mods name and url to download into the mods folder
 mods:
+  image:
+    repository: "ghcr.io/sqljames/factorio-mod-downloader"
+    ## Container image pull policy
+    pullPolicy: Always
+    ## Overrides the image tag whose default is the chart appVersion.
+    tag: "1.0.1"
+    ## You should set an fix version, i.e.:
+    # tag: "1.1.37"
   enabled: false
 # in order to use the mods portal you will need to specify the username and token in the server_settings.
   portal: []
-#     - Krastorio2
-#     - StorageTank2_Updated
-#     - early-robots
+#  - name: factorissimo-2-notnotmelon
+#    version: 3.5.11
 # unofficial section is meant to just allow you to download and place folders into the mods folder.
 # we will not check version compatibility automatically with these downloads.
 # you can encounter an error if the file names dont match what the mod is expecting for example
