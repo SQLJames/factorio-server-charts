@@ -1,5 +1,15 @@
 ## Changelog
 
+### V2.5.1
+
+#### Non-Breaking Changes
+- Updating values.schema.json
+- Updating Readme documentation
+- Adding new github workflow to verify readme documentation is up to date going forward
+- Removed unneeded files from the repository
+- Removed changelog entries from the main readme
+- Added values.schema.json workflow to make sure schema json is up to date going forward
+
 ### V2.5.0
 
 #### Breaking Changes

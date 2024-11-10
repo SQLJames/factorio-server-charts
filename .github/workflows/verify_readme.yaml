@@ -1,0 +1,28 @@
+name: Verify Chart Documentation
+on:
+  push:
+
+jobs:
+  verify-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Install Golang
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+      - name: install chart-doc-gen
+        run: go install kubepack.dev/chart-doc-gen@latest
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make
+          # Install chart-doc-gen or add additional commands as needed
+
+      - name: Generate Documentation
+        run: make gen
+
+      - name: Verify Documentation
+        run: make verify

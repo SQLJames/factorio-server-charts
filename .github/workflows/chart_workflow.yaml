@@ -1,7 +1,6 @@
 name: Lint, Test and Deploy Charts
 on:
   push:
-  pull_request:
 
 jobs:
   lint-test:

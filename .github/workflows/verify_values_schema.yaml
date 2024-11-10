@@ -1,0 +1,32 @@
+name: Verify Chart Schema
+on:
+  push:
+
+jobs:
+  verify-schema:
+    name: "Verify Chart Schema"
+    runs-on: ubuntu-22.04
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2.4.2
+        with:
+          fetch-depth: 0
+
+      - name: "Set Up Helm"
+        uses: azure/setup-helm@v3.3
+        if: github.ref != 'refs/heads/main'
+        with:
+          version: v3.4.1
+      - name: install helm-schema-gen
+        run: helm plugin install https://github.com/karuppiah7890/helm-schema-gen.git
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make
+          # Install chart-doc-gen or add additional commands as needed
+
+      - name: Generate Documentation
+        run: make gen-schema
+
+      - name: Verify Documentation
+        run: make verify
