@@ -1,0 +1,33 @@
+name: OCI Releaser
+on:
+  push:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: "Release Chart OCI to ghcr.io"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Extract Version from Chart.yaml
+        id: chart-version
+        run: |
+          # Install yq to parse YAML
+          sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          export CHART_VERSION=$(yq '.version' ./charts/factorio-server-charts/Chart.yaml)
+          echo "chart-version=${CHART_VERSION}"
+          echo "CHART_VERSION=$CHART_VERSION" >> $GITHUB_ENV
+      - name: Publish OCI
+        uses: appany/helm-oci-chart-releaser@v0.4.2
+        with:
+          name: factorio-server-charts
+          repository: sqljames
+          tag: $CHART_VERSION
+          path: charts/factorio-server-charts # Default charts/{name}
+          registry: ghcr.io
+          registry_username: ${{ secrets.REGISTRY_USERNAME }}
+          registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+          update_dependencies: 'true' # Defaults to false
