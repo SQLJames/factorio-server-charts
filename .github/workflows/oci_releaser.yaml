@@ -11,6 +11,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: "Set Up Helm"
+        uses: azure/setup-helm@v3.3
+        if: github.ref != 'refs/heads/main'
+        with:
+          version: v3.4.1
       - name: Extract Version from Chart.yaml
         id: chart-version
         run: |
