@@ -5,11 +5,10 @@ project:
   description: A Helm chart for running factorio in kubernetes
   app: Factorio
 repository:
-  url: https://github.com/SQLJames/factorio-server-charts
-  name: github
+  url: https://sqljames.github.io/factorio-server-charts
+  name: factorio
 chart:
   name: factorio-server-charts
-  version: 1.2.4
   values: "-- generate from values file --"
   valuesExample: "-- generate from values file --"
 release:
