@@ -15,7 +15,7 @@ gen-schema:
 verify: verify-gen
 
 .PHONY: verify-gen
-verify-gen: gen
+verify-gen:
 	@if !(git diff --exit-code HEAD); then \
 		echo "generated files are out of date, run make gen"; exit 1; \
 	fi
