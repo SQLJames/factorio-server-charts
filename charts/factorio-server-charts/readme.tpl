@@ -12,8 +12,8 @@
 ```bash
 $ helm repo add {{ .Repository.Name }} {{ .Repository.URL }}
 $ helm repo update
-$ helm search repo {{ .Repository.Name }}/{{ .Chart.Name }}{{ with .Chart.Version }} --version={{.}}{{ end }}
-$ helm upgrade -i {{ .Release.Name }} {{ .Repository.Name }}/{{ .Chart.Name }} -n {{ .Release.Namespace }} --create-namespace{{ with .Chart.Version }} --version={{.}}{{ end }}
+$ helm search repo {{ .Repository.Name }}/{{ .Chart.Name }}
+$ helm upgrade -i {{ .Release.Name }} {{ .Repository.Name }}/{{ .Chart.Name }} -n {{ .Release.Namespace }} --create-namespace
 ```
 
 ## Introduction
@@ -30,7 +30,7 @@ This chart deploys {{ .Project.App }} on a [Kubernetes](http://kubernetes.io) cl
 To install/upgrade the chart with the release name `{{ .Release.Name }}`:
 
 ```bash
-$ helm upgrade -i {{ .Release.Name }} {{ .Repository.Name }}/{{ .Chart.Name }} -n {{ .Release.Namespace }} --create-namespace{{ with .Chart.Version }} --version={{.}}{{ end }}
+$ helm upgrade -i {{ .Release.Name }} {{ .Repository.Name }}/{{ .Chart.Name }} -n {{ .Release.Namespace }} --create-namespace
 ```
 
 The command deploys {{ .Project.App }} on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -152,14 +152,14 @@ The following table lists the configurable parameters of the `{{ .Chart.Name }}`
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm upgrade -i`. For example:
 
 ```bash
-$ helm upgrade -i {{ .Release.Name }} {{ .Repository.Name }}/{{ .Chart.Name }} -n {{ .Release.Namespace }} --create-namespace{{ with .Chart.Version }} --version={{.}}{{ end }} --set {{ .Chart.ValuesExample }}
+$ helm upgrade -i {{ .Release.Name }} {{ .Repository.Name }}/{{ .Chart.Name }} -n {{ .Release.Namespace }} --create-namespace --set {{ .Chart.ValuesExample }}
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while
 installing the chart. For example:
 
 ```bash
-$ helm upgrade -i {{ .Release.Name }} {{ .Repository.Name }}/{{ .Chart.Name }} -n {{ .Release.Namespace }} --create-namespace{{ with .Chart.Version }} --version={{.}}{{ end }} --values values.yaml
+$ helm upgrade -i {{ .Release.Name }} {{ .Repository.Name }}/{{ .Chart.Name }} -n {{ .Release.Namespace }} --create-namespace --values values.yaml
 ```
 {{- end }}
 
