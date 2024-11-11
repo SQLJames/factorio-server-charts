@@ -1,5 +1,11 @@
 ## Changelog
 
+
+### V2.5.2
+
+#### Non-Breaking Changes
+- Removed values.schema.json
+
 ### V2.5.1
 
 #### Non-Breaking Changes
