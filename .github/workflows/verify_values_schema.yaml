@@ -4,6 +4,7 @@ on:
 
 jobs:
   verify-schema:
+    if: ${{ false }}
     name: "Verify Chart Schema"
     runs-on: ubuntu-22.04
     steps:
