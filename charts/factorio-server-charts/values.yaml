@@ -140,6 +140,23 @@ persistence:
   ## If you have additional labels to apply to the volume
   labels: {}
 
+#### Additional containers ####
+### @section Additional Containers
+# Specify any additional sidecar containers for the deployment here, such as log or metric collectors.
+# See https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#container-v1-core for the full Container
+# reference.
+additionalContainers: []
+  # - name: node_exporter
+  #   image: quay.io/prometheus/node_exporter:v1.9.1
+  #   command:
+  #     - --collector.disable-defaults
+  #     - --collector.textfile
+  #     - --collector.textfile.directory=/factorio/script-output/
+  #   ports:
+  #     - name: metrics
+  #       containerPort: 9100
+
+    
 
 #### Factorio application configuration ####
 ## @section Factorio Parameters
