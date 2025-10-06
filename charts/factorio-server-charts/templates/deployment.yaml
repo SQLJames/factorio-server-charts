@@ -252,6 +252,9 @@ spec:
         - pingpong3.factorio.com
         - pingpong4.factorio.com
 {{- end }}
+{{- if .Values.additionalContainers }}
+{{ toYaml .Values.additionalContainers | indent 6 }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
