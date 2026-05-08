@@ -19,6 +19,10 @@ spec:
       labels:
         app: {{ template "factorio-server-charts.fullname" . }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.securityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
