@@ -36,6 +36,9 @@ image:
   ## You should set an fix version, i.e.:
   # tag: "1.1.37"
 
+# An optional list of references to secrets in the same namespace to use for pulling any of the images used
+imagePullSecrets: []
+
 nodeSelector: {}
 #  beta.kubernetes.io/os: linux
 #  beta.kubernetes.io/arch: amd64
